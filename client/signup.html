@@ -251,7 +251,7 @@ async function handleSignup(e) {
     btn.textContent = t('signup.creating');
     const res = await fetch('/api/create-account', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-api-secret': API_SECRET },
       body: JSON.stringify({ email: finalEmail, password: pw1, full_name: finalName })
     });
     const result = await res.json();
