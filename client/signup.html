@@ -117,12 +117,12 @@
 
     <!-- Success -->
     <div class="success" id="success-section">
-      <div class="success-icon" id="s-icon" style="transform:scale(0);opacity:0;">
+      <div class="success-icon" id="s-icon" style="transform:scale(1);opacity:1;">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <div class="success-title" id="s-title" style="opacity:0;transform:translateY(16px);" data-i18n="signup.welcome">Bienvenue chez Visunyx !</div>
-      <div class="success-sub" id="s-sub" style="opacity:0;transform:translateY(16px);" data-i18n="signup.welcome.sub">Votre compte a ete cree avec succes. Vous pouvez maintenant acceder a votre espace client et suivre vos projets.</div>
-      <a href="index.html" class="btn-submit" id="s-btn" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;opacity:0;transform:translateY(16px);" data-i18n="signup.go">
+      <div class="success-title" id="s-title" style="opacity:1;" data-i18n="signup.welcome">Bienvenue chez Visunyx !</div>
+      <div class="success-sub" id="s-sub" style="opacity:1;" data-i18n="signup.welcome.sub">Votre compte a ete cree avec succes. Vous pouvez maintenant acceder a votre espace client et suivre vos projets.</div>
+      <a href="index.html" class="btn-submit" id="s-btn" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;opacity:1;" data-i18n="signup.go">
         Acceder a mon espace
       </a>
     </div>
@@ -133,8 +133,6 @@
     </div>
   </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
 <script>
 const params = new URLSearchParams(window.location.search);
 const email = params.get('email') || '';

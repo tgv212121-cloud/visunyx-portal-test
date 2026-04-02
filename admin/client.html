@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
   <script src="../shared/i18n.js"></script>
   <script src="../shared/supabase.js"></script>
   <script src="../shared/components.js"></script>
@@ -180,7 +180,7 @@ async function init() {
      </a>`
   );
   await setupSidebarUser();
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 
   await loadClient();
   translatePage();
@@ -193,7 +193,7 @@ async function loadClient() {
     renderProjects(clientData.projects || []);
     initSpotlight();
     initMagnetic('[data-magnetic]');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   } catch(e) {
     showToast(t('account.error'), 'error');
   }
@@ -253,7 +253,7 @@ async function saveClient() {
     showToast(t('account.saved'), 'success');
     toggleEdit();
     renderClientInfo();
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   } catch(e) {
     showToast(t('account.error'), 'error');
   }
@@ -281,7 +281,7 @@ async function inviteClient() {
   } finally {
     btn.disabled = false;
     btn.innerHTML = `<i data-lucide="user-plus" style="width:13px;height:13px;"></i> ${t('admin.client.invite')}`;
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   }
 }
 
@@ -289,11 +289,11 @@ function renderProjects(projects) {
   const grid = document.getElementById('projects-grid');
   if (!projects.length) {
     grid.innerHTML = renderEmptyState('briefcase', t('empty.projects'), t('client.noproject.hint'), `<button class="btn btn-primary btn-sm" onclick="openModal('modal-project')"><i data-lucide="plus" style="width:14px;height:14px;"></i> ${t('btn.create')}</button>`);
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
     return;
   }
   grid.innerHTML = projects.map(p => renderProjectCard({ ...p, clients: clientData }, 'project.html')).join('');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 async function submitNewProject(e) {

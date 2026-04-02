@@ -55,7 +55,7 @@ class ChatChannel {
       this.container.innerHTML = this.isInternal
         ? renderEmptyState('shield', t('chat.internal.empty'), t('chat.internal.empty.hint'))
         : renderEmptyState('message-circle', t('chat.empty'), t('chat.empty.client') || t('chat.empty'));
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      refreshIcons();
     } else {
       msgs.forEach(m => {
         if (m.id) this._displayedIds.add(m.id);
@@ -71,7 +71,7 @@ class ChatChannel {
           this.badge.textContent = unread;
         }
       }
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      refreshIcons();
       if (typeof loadMessageAttachments === 'function') loadMessageAttachments();
     }
 
@@ -201,7 +201,7 @@ class ChatChannel {
 
     this.container.insertAdjacentHTML('beforeend', this._renderBubble(msg));
     this._scrollToBottom();
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
     if (!this.isInternal && typeof loadMessageAttachments === 'function') loadMessageAttachments();
   }
 

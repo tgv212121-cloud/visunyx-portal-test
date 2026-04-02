@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
   <script src="../shared/i18n.js"></script>
   <script src="../shared/supabase.js"></script>
   <script src="../shared/components.js"></script>
@@ -313,7 +313,7 @@ async function init() {
      </a>`
   );
   await setupSidebarUser();
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 
   await Promise.all([loadProject(), loadFiles(), loadHistory(), loadDesignerAssignment()]);
   initSpotlight();
@@ -374,7 +374,7 @@ async function loadProject() {
     renderProjectHeader();
     renderClientInfo();
     await loadBrief();
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   } catch(e) {
     showToast(t('admin.project.load.error'), 'error');
   }
@@ -414,7 +414,7 @@ function renderProjectHeader() {
     ${p.delivered_at ? `<div class="meta-item"><span class="meta-label">${t('admin.project.delivered')}</span><span class="meta-value" style="color:#34D399;">${formatDate(p.delivered_at)}</span></div>` : ''}
   `;
 
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 function renderClientInfo() {
@@ -432,7 +432,7 @@ function renderClientInfo() {
     <a href="./client.html?id=${projectData.client_id}" class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%;">
       <i data-lucide="external-link" style="width:12px;height:12px;"></i> ${t('project.viewclient')}
     </a>` : '<span style="color:var(--fg-subtle);">-</span>';
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 async function changeStatus(newStatus) {
@@ -454,7 +454,7 @@ async function changeStatus(newStatus) {
       headers: { 'Content-Type': 'application/json', 'x-api-secret': API_SECRET },
       body: JSON.stringify({ project_id: projectId, new_status: newStatus })
     }).catch(() => {});
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   } catch(e) {
     showToast(t('admin.project.status.error'), 'error');
   }
@@ -489,10 +489,10 @@ function copyBrief() {
   navigator.clipboard.writeText(_aiBriefText).then(() => {
     const btn = document.getElementById('btn-copy-brief');
     btn.innerHTML = '<i data-lucide="check" style="width:12px;height:12px;"></i> ' + t('admin.project.copied');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
     setTimeout(() => {
       btn.innerHTML = '<i data-lucide="copy" style="width:12px;height:12px;"></i> ' + t('admin.project.copy');
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      refreshIcons();
     }, 2000);
   });
 }
@@ -518,7 +518,7 @@ async function loadFiles() {
   try {
     allFiles = await API.getDeliverables(projectId);
     renderFilesView();
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   } catch(e) { console.error(e); }
 }
 
@@ -598,7 +598,7 @@ function renderFilesView() {
       container.innerHTML = html;
     }
   }
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
   if (typeof loadFileThumbnails === 'function') loadFileThumbnails();
 }
 
@@ -746,7 +746,7 @@ async function loadHistory() {
   const timeline = document.getElementById('activity-timeline');
   if (!logs.length) {
     timeline.innerHTML = renderEmptyState('clock', t('admin.project.history.empty'), t('admin.project.history.empty.hint'));
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
     return;
   }
   timeline.innerHTML = logs.map(log => `
@@ -760,7 +760,7 @@ async function loadHistory() {
       </div>
     </div>
   `).join('');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 // ── Designer Assignment ───────────────────────────────────────
@@ -797,7 +797,7 @@ function renderAssignedDesigners(assigned) {
       </button>
     </div>`;
   }).join('');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 function renderDesignerSelect(all, assigned) {

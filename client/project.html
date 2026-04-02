@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
   <script src="../shared/i18n.js"></script>
   <script src="../shared/supabase.js"></script>
   <script src="../shared/components.js"></script>
@@ -219,7 +219,7 @@ async function init() {
   await Promise.all([loadProject(), loadFiles(), window._clientChat.loadMessages()]);
 
   initSpotlight();
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 
   translatePage();
 }

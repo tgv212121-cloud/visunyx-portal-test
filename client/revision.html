@@ -6,7 +6,7 @@
   <title>Demande de revision - Visunyx Studio</title>
   <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../shared/i18n.js"></script>
   <script src="../shared/supabase.js"></script>
@@ -233,12 +233,12 @@
   <!-- Done -->
   <div class="screen" id="screen-done">
     <div class="completion" id="completion-content">
-      <div class="completion-icon" id="completion-icon" style="transform:scale(0);opacity:0;">
+      <div class="completion-icon" id="completion-icon" style="transform:scale(1);opacity:1;">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <h2 class="completion-title" style="opacity:0;transform:translateY(20px);" id="completion-title" data-i18n="revision.sent.title">Demande envoyée !</h2>
-      <p class="completion-sub" style="opacity:0;transform:translateY(20px);" id="completion-sub" data-i18n="revision.sent.sub">Votre demande de révision a bien été transmise à notre équipe. Nous allons analyser vos retours et travailler sur les ajustements.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px);" id="completion-actions">
+      <h2 class="completion-title" style="opacity:1;" id="completion-title" data-i18n="revision.sent.title">Demande envoyée !</h2>
+      <p class="completion-sub" style="opacity:1;" id="completion-sub" data-i18n="revision.sent.sub">Votre demande de révision a bien été transmise à notre équipe. Nous allons analyser vos retours et travailler sur les ajustements.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:1;" id="completion-actions">
         <a id="btn-back-project" href="project.html" class="btn-nav btn-next" style="display:inline-flex;padding:14px 36px;text-decoration:none;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
           <span data-i18n="revision.back.project">Retour à mon projet</span>

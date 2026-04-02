@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
   <script src="../shared/i18n.js"></script>
   <script src="../shared/supabase.js"></script>
   <script src="../shared/components.js"></script>
@@ -462,7 +462,7 @@ async function init() {
 
   await setupSidebarUser();
 
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
   translatePage();
 
   // Load data in parallel
@@ -472,7 +472,7 @@ async function init() {
   initMagnetic('[data-magnetic]');
   initPageReveal();
   loadNotifCount();
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 
   // Handle ?tab= URL param — MUST run after initPageReveal (GSAP clearProps resets display)
   // Use setTimeout to ensure GSAP animations have started before we re-apply display:none
@@ -505,7 +505,7 @@ async function loadStats() {
       ${statCard('check-circle', stats.deliveredProjects ?? 0, t('admin.stat.delivered'), 'delivered')}
       ${statCard('message-circle', stats.unreadMessages ?? 0, t('admin.stat.unread'), 'messages')}
     `;
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
     initSpotlight('.stat-card');
   } catch(e) { console.error(e); }
 }
@@ -539,7 +539,7 @@ function openStatPanel(type) {
     <div id="stat-panel-list" style="flex:1;overflow-y:auto;padding:10px;"></div>
   `;
   document.body.appendChild(panel);
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
   loadStatPanelData(type);
 }
 
@@ -612,7 +612,7 @@ async function loadStatPanelData(type) {
       )).join('');
     }
 
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   } catch(e) {
     console.error(e);
     listEl.innerHTML = `<div style="padding:20px;text-align:center;color:var(--fg-subtle);font-size:var(--text-xs);">${t('panel.error')}</div>`;
@@ -726,7 +726,7 @@ function renderProjectsTable(projects) {
       </td>
     </tr>`;
   }).join('');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 // ── Cell dropdown toggle ──────────────────────────────────
@@ -883,7 +883,7 @@ function renderClientsTable(clients) {
     return;
   }
   tbody.innerHTML = clients.map(c => renderClientRow(c)).join('');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 function filterClients() {
@@ -941,7 +941,7 @@ function renderTeamTable(designers) {
   const tbody = document.getElementById('team-tbody');
   if (!designers.length) {
     tbody.innerHTML = `<tr><td colspan="6">${renderEmptyState('palette', t('empty.designers'), t('empty.designers.hint'))}</td></tr>`;
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
     return;
   }
 
@@ -1011,7 +1011,7 @@ function renderTeamTable(designers) {
       </td>
     </tr>`;
   }).join('');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 function _genTempPass() {
@@ -1168,7 +1168,7 @@ function renderUsersTable() {
     </tr>`;
   }).join('');
 
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 async function handleRoleChange(userId, newRole, userName) {
@@ -1225,7 +1225,7 @@ async function loadActivity() {
         </div>
       </div>
     `).join('');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   } catch(e) { console.error(e); }
 }
 
@@ -1267,7 +1267,7 @@ async function submitNewProject(e) {
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i data-lucide="plus" style="width:14px;height:14px;"></i> ' + t('modal.btn.createproject');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   }
 }
 

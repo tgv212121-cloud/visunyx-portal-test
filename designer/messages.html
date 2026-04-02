@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
   <script src="../shared/i18n.js"></script>
   <script src="../shared/supabase.js"></script>
   <script src="../shared/components.js"></script>
@@ -59,7 +59,7 @@ async function init() {
   document.getElementById('sidebar-container').innerHTML = renderSidebar('messages', 0, 'designer');
   document.getElementById('topbar-container').innerHTML = renderTopbar(t('designer.messages'), t('designer.messages.subtitle'));
   await setupSidebarUser();
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 
   // Get designer's projects
   const projects = await API.getMyDesignerProjects(user.id);
@@ -70,7 +70,7 @@ async function init() {
       t('designer.messages.noproject.hint')
     );
     document.getElementById('conversations-count').textContent = '';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
     return;
   }
 
@@ -113,7 +113,7 @@ async function init() {
     `${conversations.length} ${t('designer.messages.conversation')}${totalUnread > 0 ? ` · ${totalUnread} ${t('designer.messages.unread')}` : ''}`;
 
   renderConversations(conversations);
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
   translatePage();
 }
 
@@ -128,7 +128,7 @@ function filterConversations() {
     });
     renderConversations(filtered);
   }
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 function renderConversations(conversations) {
@@ -141,7 +141,7 @@ function renderConversations(conversations) {
       q ? t('designer.messages.noresult') : t('designer.messages.empty'),
       q ? t('designer.messages.noresult.hint') : t('designer.messages.empty.hint')
     );
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
     return;
   }
 

@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
   <script src="../shared/i18n.js"></script>
   <script src="../shared/supabase.js"></script>
 
@@ -133,7 +133,7 @@
     <img src="../shared/visunyx-icon.svg" alt="Visunyx" style="height:22px;width:auto;">
       <span style="font-size:15px;font-weight:700;color:#fff;">Visunyx</span>
   </a>
-  <div class="step-counter" id="step-counter" style="opacity:0;"></div>
+  <div class="step-counter" id="step-counter" style="opacity:1;"></div>
 </div>
 
 <div class="app" id="app">
@@ -305,7 +305,7 @@ async function init() {
     });
   }
 
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 
   translatePage();
 
@@ -374,7 +374,7 @@ function renderQuestion(idx) {
     </div>`;
   }
 
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 
   // Animate card
   if (typeof gsap !== 'undefined') {
@@ -464,13 +464,13 @@ async function submitBrief() {
     }
     switchScreen('done');
     document.getElementById('step-counter').style.opacity = '0';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
 
   } catch(e) {
     btn.disabled = false;
     btn.innerHTML = `${t('brief.send')} <i data-lucide="send" style="width:14px;height:14px;"></i>`;
     alert(t('brief.error.send'));
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   }
 }
 

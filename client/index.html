@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
   <script src="../shared/i18n.js"></script>
   <script src="../shared/supabase.js"></script>
   <script src="../shared/components.js"></script>
@@ -146,7 +146,7 @@
   <main class="client-content">
 
     <!-- Welcome -->
-    <div class="welcome-block" id="welcome-block" style="opacity:0;">
+    <div class="welcome-block" id="welcome-block" style="opacity:1;">
       <div class="welcome-greeting"><span data-i18n="client.welcome">Bonjour,</span> <span id="client-first-name"></span></div>
       <div class="welcome-sub" data-i18n="client.welcome.sub">Suivez l'avancement de votre projet Visunyx en temps réel.</div>
     </div>
@@ -239,7 +239,8 @@ async function init() {
 
   initSpotlight('.project-card-client');
   initMagnetic('[data-magnetic]');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
+  prefetchOnHover('.project-card-client', el => el.getAttribute('onclick')?.match(/id=([^']+)/)?.[0] ? 'project.html?' + el.getAttribute('onclick').match(/id=[^']+/)[0] : null);
 
   if (typeof gsap !== 'undefined') {
     gsap.fromTo('.project-card-client',
@@ -369,7 +370,7 @@ async function exportMyData() {
   }
   btn.disabled = false;
   btn.innerHTML = '<i data-lucide="download" style="width:13px;height:13px;"></i> Exporter mes données';
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 async function requestDeleteAccount() {

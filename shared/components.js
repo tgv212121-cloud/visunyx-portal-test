@@ -2,6 +2,30 @@
 // VISUNYX PORTAL — Shared Components & UI Helpers
 // ============================================================
 
+let _lucideTimer = null;
+function refreshIcons() {
+  if (_lucideTimer) return;
+  _lucideTimer = requestAnimationFrame(() => {
+    _lucideTimer = null;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  });
+}
+
+const _prefetched = new Set();
+function prefetchOnHover(selector, urlExtractor) {
+  document.querySelectorAll(selector).forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      const url = urlExtractor(el);
+      if (!url || _prefetched.has(url)) return;
+      _prefetched.add(url);
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = url;
+      document.head.appendChild(link);
+    }, { once: true });
+  });
+}
+
 // ── SIDEBAR (minimaliste : logo + compte) ────────────────────
 function renderSidebar(activeItem, unreadCount = 0, role = 'admin') {
   return `
@@ -340,7 +364,7 @@ async function loadNotifications() {
         ${item.isNew ? '<div style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:4px;"></div>' : ''}
       </a>`).join('');
 
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   } catch(e) {
     console.error('Notif load error:', e);
     list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--fg-subtle);font-size:var(--text-xs);">${t('account.error')}</div>`;
@@ -586,7 +610,7 @@ function showToast(message, type = 'info') {
     <i data-lucide="${icons[type] || 'info'}" class="toast-icon" style="width:16px;height:16px;flex-shrink:0;"></i>
     <span>${escHtml(message)}</span>`;
   container.appendChild(toast);
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
   setTimeout(() => {
     toast.style.animation = 'none';
     toast.style.opacity = '0';
@@ -682,7 +706,7 @@ function promptInput(title, placeholder = '', defaultValue = '', icon = 'folder-
     </div>`;
 
     document.body.appendChild(overlay);
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
 
     const input = overlay.querySelector('#prompt-input');
     input.focus();
@@ -888,7 +912,7 @@ async function setupSidebarUser() {
       </div>
     </a>`;
     list.insertAdjacentHTML('afterbegin', html);
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    refreshIcons();
   }
 }
 
@@ -996,7 +1020,7 @@ async function openFilePreview(filePath, fileName, fileSize) {
     </div>`;
 
   overlay.classList.add('open');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  refreshIcons();
 }
 
 function closeFilePreview() {

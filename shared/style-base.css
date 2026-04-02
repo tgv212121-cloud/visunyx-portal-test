@@ -118,6 +118,7 @@ ul { list-style: none; }
 }
 
 .vx-orb {
+  display: none;
   position: absolute;
   border-radius: 50%;
   filter: blur(120px);
