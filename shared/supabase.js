@@ -6,7 +6,7 @@
 // ============================================================
 
 const SUPABASE_URL  = 'https://nokrexfszurxxuspvbjd.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_Bk0OoLi60NqpV-2hmUYGVw_FxKLXjHW';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5va3JleGZzenVyeHh1c3B2YmpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMzczNjEsImV4cCI6MjA5MDcxMzM2MX0.8yvbsHLRvGRvNGxFOXiAbGKuegm_e78RXXyZAWtPr10';
 const API_SECRET = 'vx-sec-8f3k2m9p4w7q1r6t5y0u';
 
 // ── Init ────────────────────────────────────────────────────
