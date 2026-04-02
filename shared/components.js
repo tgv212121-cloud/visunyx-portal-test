@@ -2,6 +2,21 @@
 // VISUNYX PORTAL — Shared Components & UI Helpers
 // ============================================================
 
+// ── bfcache support: instant back/forward navigation ────────
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) {
+    // Page restored from bfcache — refresh icons and hide loading states
+    refreshIcons();
+    document.querySelectorAll('.skeleton-card,.vx-skeleton-block').forEach(el => el.remove());
+  }
+});
+window.addEventListener('pagehide', () => {
+  // Clean up realtime channels so bfcache can work
+  if (typeof db !== 'undefined' && db.removeAllChannels) {
+    try { db.removeAllChannels(); } catch(e) {}
+  }
+});
+
 let _lucideTimer = null;
 function refreshIcons() {
   if (_lucideTimer) return;

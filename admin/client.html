@@ -175,7 +175,7 @@ async function init() {
   document.getElementById('topbar-container').innerHTML  = renderTopbar(
     t('admin.client.page'),
     '',
-    `<a href="index.html" class="btn btn-ghost btn-sm">
+    `<a href="javascript:history.back()" class="btn btn-ghost btn-sm">
        <i data-lucide="arrow-left" style="width:13px;height:13px;"></i> <span data-i18n="btn.back">Retour</span>
      </a>`
   );
