@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visunyx Studio</title>
+  <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --purple: #9332FF; --purple-dark: #1A006C; --purple-mid: #5B1FA8;
+      --accent: #4D65FF; --bg: #0B0B1A; --fg: #F0EEFF;
+      --fg-muted: rgba(240,238,255,0.55); --fg-subtle: rgba(240,238,255,0.28);
+      --glass: rgba(147,50,255,0.07); --glass-b: rgba(147,50,255,0.18);
+      --glass-bh: rgba(147,50,255,0.35); --input-bg: rgba(255,255,255,0.04);
+      --ease: cubic-bezier(0.22,1,0.36,1); --font: 'Montserrat', sans-serif;
+      --r: 16px;
+    }
+    html, body {
+      height: 100%; font-family: var(--font); background: var(--bg); color: var(--fg);
+      overflow: hidden; -webkit-font-smoothing: antialiased;
+    }
+
+    /* Background */
+    .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(120px); animation: drift linear infinite; }
+    .orb-1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(147,50,255,0.18) 0%, transparent 70%); top: -280px; left: -180px; animation-duration: 28s; }
+    .orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(77,101,255,0.12) 0%, transparent 70%); bottom: -160px; right: -100px; animation-duration: 34s; animation-direction: reverse; }
+    .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(147,50,255,0.08) 0%, transparent 70%); top: 50%; left: 60%; transform: translate(-50%,-50%); animation-duration: 42s; }
+    @keyframes drift {
+      0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(28px,-18px) scale(1.05)}
+      50%{transform:translate(-16px,26px) scale(0.96)} 75%{transform:translate(18px,12px) scale(1.03)}
+    }
+    .grid { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background-image: linear-gradient(rgba(147,50,255,0.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(147,50,255,0.04) 1px,transparent 1px);
+      background-size: 52px 52px; }
+    .noise { position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: .032; width: 100%; height: 100%; }
+    @media (prefers-reduced-motion: reduce) { .orb { animation: none !important; } }
+
+    /* Layout */
+    .app {
+      position: relative; z-index: 10; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+
+    /* Card */
+    .card {
+      width: 100%; max-width: 420px;
+      background: var(--glass);
+      backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--glass-b); border-radius: var(--r);
+      padding: 40px 38px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(147,50,255,0.06), 0 40px 100px rgba(0,0,0,0.7);
+    }
+    .card::before {
+      content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg,transparent,rgba(147,50,255,0.5),transparent);
+    }
+
+    /* Logo */
+    .logo-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
+    .logo-wrap img { height: 36px; width: auto; }
+
+    /* Headline */
+    .headline {
+      text-align: center; margin-bottom: 28px;
+    }
+    .headline h1 {
+      font-size: 22px; font-weight: 700; color: var(--fg);
+      margin-bottom: 6px; letter-spacing: -0.01em;
+    }
+    .headline p { font-size: 13px; color: var(--fg-muted); line-height: 1.6; font-weight: 400; }
+
+    /* Tabs */
+    .tabs {
+      display: flex; gap: 4px; padding: 4px;
+      background: rgba(147,50,255,0.06);
+      border: 1px solid var(--glass-b); border-radius: 10px;
+      margin-bottom: 24px;
+    }
+    .tab-btn {
+      flex: 1; padding: 9px 16px; border: none; background: none;
+      font-family: var(--font); font-size: 12px; font-weight: 600;
+      color: var(--fg-muted); cursor: pointer; border-radius: 7px;
+      transition: all 0.2s var(--ease);
+    }
+    .tab-btn.active { background: var(--purple); color: #fff; box-shadow: 0 2px 12px rgba(147,50,255,0.4); }
+
+    /* Form */
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--fg-muted); margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%; background: var(--input-bg);
+      border: 1px solid var(--glass-b); border-radius: 10px;
+      padding: 12px 14px; color: var(--fg); font-family: var(--font);
+      font-size: 14px; font-weight: 400; outline: none;
+      transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s;
+    }
+    .form-input::placeholder { color: var(--fg-subtle); }
+    .form-input:focus {
+      border-color: rgba(147,50,255,0.5);
+      background: rgba(147,50,255,0.06);
+      box-shadow: 0 0 0 3px rgba(147,50,255,0.12);
+    }
+
+    /* Btn */
+    .btn-submit {
+      width: 100%; padding: 13px 24px;
+      background: linear-gradient(135deg, var(--purple), var(--accent));
+      background-size: 200% 100%; background-position: 0% 0%;
+      color: #fff; border: none; border-radius: 10px;
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      letter-spacing: 0.02em; cursor: pointer;
+      box-shadow: 0 4px 24px rgba(147,50,255,0.4);
+      transition: all 0.25s var(--ease);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      position: relative; overflow: hidden;
+    }
+    .btn-submit:hover {
+      background-position: 100% 0%;
+      box-shadow: 0 6px 32px rgba(147,50,255,0.55);
+      transform: translateY(-1px);
+    }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-google {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 12px 20px; background: #fff; color: #333; font-family: var(--font);
+      font-size: 14px; font-weight: 600; border: none; border-radius: 10px;
+      cursor: pointer; transition: all 0.25s var(--ease);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .btn-google:hover { background: #f5f5f5; box-shadow: 0 4px 20px rgba(0,0,0,0.2); transform: translateY(-1px); }
+    .btn-google:active { transform: translateY(0); }
+
+    .separator {
+      display: flex; align-items: center; gap: 14px; margin: 20px 0;
+    }
+    .separator::before, .separator::after {
+      content: ''; flex: 1; height: 1px; background: rgba(147,50,255,0.15);
+    }
+    .separator span { font-size: 11px; font-weight: 600; color: var(--fg-subtle); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    .btn-spinner {
+      width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Error */
+    .error-msg {
+      display: none; align-items: center; gap: 8px;
+      padding: 11px 14px; margin-bottom: 16px;
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 10px; font-size: 13px; color: #F87171;
+      animation: shake 0.3s var(--ease);
+    }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+    }
+
+    /* Success */
+    .success-msg {
+      display: none; flex-direction: column; align-items: center;
+      text-align: center; gap: 12px; padding: 8px 0;
+    }
+    .success-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: #34D399; font-size: 22px;
+    }
+    .success-title { font-size: 16px; font-weight: 700; color: var(--fg); }
+    .success-sub { font-size: 13px; color: var(--fg-muted); line-height: 1.6; }
+
+    /* Footer */
+    .card-footer {
+      margin-top: 20px; text-align: center;
+      font-size: 11px; color: var(--fg-subtle);
+    }
+
+    /* Fade-in on load */
+    .card { animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+    .logo-wrap { animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
+    .headline  { animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.3s both; }
+    .tabs      { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.38s both; }
+    #form-password { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.44s both; }
+    #form-magic    { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.44s both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="grid"></div>
+<svg class="noise" xmlns="http://www.w3.org/2000/svg">
+  <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+  <feColorMatrix type="saturate" values="0"/></filter>
+  <rect width="100%" height="100%" filter="url(#noise)"/>
+</svg>
+
+<div class="app">
+  <div class="card" id="main-card">
+    <div class="logo-wrap" style="display:flex;align-items:center;gap:10px;justify-content:center;">
+      <img src="./shared/visunyx-icon.svg" alt="Visunyx" style="height:32px;width:auto;">
+      <span style="font-size:22px;font-weight:800;color:#fff;letter-spacing:0.02em;">Visunyx</span>
+    </div>
+
+    <div class="headline">
+      <h1 data-i18n="auth.title">Espace Studio</h1>
+      <p data-i18n="auth.subtitle">Accédez à votre espace de suivi de projet Visunyx</p>
+    </div>
+
+    <!-- Google Auth -->
+    <button class="btn-google" onclick="handleGoogleLogin()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      <span data-i18n="auth.google">Continuer avec Google</span>
+    </button>
+
+    <div class="separator">
+      <span data-i18n="auth.or">ou</span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-password" onclick="switchTab('password')" data-i18n="auth.tab.password">
+        Connexion
+      </button>
+      <button class="tab-btn" id="tab-magic" onclick="switchTab('magic')" data-i18n="auth.tab.magic">
+        Lien magique
+      </button>
+    </div>
+
+    <!-- Error -->
+    <div class="error-msg" id="error-msg">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="error-text"></span>
+    </div>
+
+    <!-- Password Form -->
+    <form id="form-password" onsubmit="submitPassword(event)">
+      <div class="form-group">
+        <label class="form-label" data-i18n="auth.email">Adresse email</label>
+        <input type="email" class="form-input" id="pw-email" data-i18n="auth.email.placeholder" placeholder="vous@exemple.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="auth.password">Mot de passe</label>
+        <div style="position:relative;">
+          <input type="password" class="form-input" id="pw-password" data-i18n="auth.password.placeholder" placeholder="••••••••" required autocomplete="current-password" style="padding-right:44px;">
+          <button type="button" onclick="togglePw()" id="pw-toggle" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--fg-subtle);cursor:pointer;padding:4px;" title="Afficher le mot de passe" data-i18n-title="auth.password.show">
+            <svg id="pw-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            <svg id="pw-eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn-submit" id="btn-password">
+        <div class="btn-spinner" id="spinner-pw"></div>
+        <span id="btn-pw-text" data-i18n="auth.login">Se connecter</span>
+      </button>
+      <div style="text-align:center;margin-top:12px;">
+        <button type="button" onclick="showResetPassword()" style="background:none;border:none;font-family:var(--font);font-size:12px;color:var(--fg-subtle);cursor:pointer;text-decoration:underline;" data-i18n="auth.forgot">Mot de passe oublie ?</button>
+      </div>
+    </form>
+
+    <!-- Reset Password Form -->
+    <form id="form-reset" style="display:none;" onsubmit="submitReset(event)">
+      <div style="font-size:var(--text-sm);color:var(--fg-muted);margin-bottom:16px;line-height:1.6;" data-i18n="auth.reset.desc">
+        Entrez votre email et nous vous enverrons un lien pour reinitialiser votre mot de passe.
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="auth.email">Adresse email</label>
+        <input type="email" class="form-input" id="reset-email" data-i18n="auth.email.placeholder" placeholder="vous@exemple.com" required>
+      </div>
+      <button type="submit" class="btn-submit" id="btn-reset">
+        <div class="btn-spinner" id="spinner-reset"></div>
+        <span id="btn-reset-text" data-i18n="auth.reset.send">Envoyer le lien</span>
+      </button>
+      <div style="text-align:center;margin-top:12px;">
+        <button type="button" onclick="switchTab('password')" style="background:none;border:none;font-family:var(--font);font-size:12px;color:var(--fg-subtle);cursor:pointer;" data-i18n="auth.reset.back">← Retour a la connexion</button>
+      </div>
+    </form>
+
+    <!-- Reset success -->
+    <div id="success-reset" style="display:none;text-align:center;padding:20px 0;">
+      <div style="width:48px;height:48px;border-radius:50%;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:20px;">✓</div>
+      <div style="font-size:var(--text-base);font-weight:700;color:var(--fg);margin-bottom:6px;" data-i18n="auth.reset.sent">Email envoye !</div>
+      <div style="font-size:12px;color:var(--fg-muted);line-height:1.6;" data-i18n="auth.reset.check">Verifiez votre boite mail pour reinitialiser votre mot de passe.</div>
+      <button type="button" onclick="switchTab('password')" style="background:none;border:none;font-family:var(--font);font-size:12px;color:var(--purple);cursor:pointer;margin-top:16px;" data-i18n="auth.reset.back">← Retour a la connexion</button>
+    </div>
+
+    <!-- Magic Link Form -->
+    <form id="form-magic" style="display:none;" onsubmit="submitMagic(event)">
+      <div class="form-group">
+        <label class="form-label" data-i18n="auth.email">Adresse email</label>
+        <input type="email" class="form-input" id="magic-email" data-i18n="auth.email.placeholder" placeholder="client@exemple.com" required autocomplete="email">
+      </div>
+      <button type="submit" class="btn-submit" id="btn-magic">
+        <div class="btn-spinner" id="spinner-magic"></div>
+        <span id="btn-magic-text" data-i18n="auth.magic.send">Recevoir le lien de connexion</span>
+      </button>
+      <div style="margin-top:12px;font-size:12px;color:var(--fg-subtle);text-align:center;line-height:1.6;" data-i18n="auth.magic.check">
+        Vous recevrez un email avec un lien sécurisé valable 1h.
+      </div>
+    </form>
+
+    <!-- Success state (magic link) -->
+    <div class="success-msg" id="success-magic">
+      <div class="success-icon">✓</div>
+      <div class="success-title" data-i18n="auth.magic.sent">Email envoyé !</div>
+      <p class="success-sub" data-i18n="auth.magic.check">Vérifiez votre boîte mail et cliquez sur le lien de connexion pour accéder à votre espace.</p>
+    </div>
+
+    <div class="card-footer">
+      <a href="./client/signup.html" style="color:var(--purple);text-decoration:none;font-weight:600;" data-i18n="auth.signup">Premiere visite ? Creer votre compte</a>
+      <div style="margin-top:8px;" data-i18n="auth.poweredby">Propulse par <strong>Visunyx Studio</strong></div>
+    </div>
+  </div>
+</div>
+
+<script src="./shared/i18n.js"></script>
+<script src="./shared/supabase.js"></script>
+<script>
+// ── Tab switch ────────────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('form-password').style.display = tab === 'password' ? '' : 'none';
+  document.getElementById('form-magic').style.display    = tab === 'magic'    ? '' : 'none';
+  document.getElementById('form-reset').style.display    = tab === 'reset'    ? '' : 'none';
+  document.getElementById('success-magic').style.display = 'none';
+  document.getElementById('success-reset').style.display = 'none';
+  document.getElementById('tab-password').classList.toggle('active', tab === 'password');
+  document.getElementById('tab-magic').classList.toggle('active',    tab === 'magic');
+  hideError();
+}
+
+function showResetPassword() {
+  switchTab('reset');
+}
+
+async function submitReset(e) {
+  e.preventDefault();
+  hideError();
+  const email = document.getElementById('reset-email').value.trim();
+  document.getElementById('btn-reset').disabled = true;
+  document.getElementById('btn-reset-text').textContent = t('auth.logging');
+  try {
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login.html'
+    });
+    if (error) throw error;
+    document.getElementById('form-reset').style.display = 'none';
+    document.getElementById('success-reset').style.display = '';
+  } catch(err) {
+    showError(err.message || t('auth.error.email'));
+    document.getElementById('btn-reset').disabled = false;
+    document.getElementById('btn-reset-text').textContent = t('auth.reset.send');
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  document.getElementById('error-text').textContent = msg;
+  el.style.display = 'flex';
+  el.style.animation = 'none';
+  requestAnimationFrame(() => { el.style.animation = ''; });
+}
+
+function hideError() { document.getElementById('error-msg').style.display = 'none'; }
+
+function setLoading(btnId, spinnerId, textId, loading, text = null) {
+  const btn = document.getElementById(btnId);
+  document.getElementById(spinnerId).style.display = loading ? 'block' : 'none';
+  document.getElementById(textId).textContent = loading ? t('auth.logging') : (text || t('auth.login'));
+  btn.disabled = loading;
+}
+
+// ── Password login ────────────────────────────────────────────
+async function submitPassword(e) {
+  e.preventDefault();
+  hideError();
+  const email    = document.getElementById('pw-email').value.trim();
+  const password = document.getElementById('pw-password').value;
+  setLoading('btn-password', 'spinner-pw', 'btn-pw-text', true);
+  try {
+    await signIn(email, password);
+    const user    = await getUser();
+    const profile = await getProfile(user.id);
+    if (profile?.role === 'developer' || profile?.role === 'admin') {
+      window.location.href = './admin/index.html';
+    } else if (profile?.role === 'designer') {
+      window.location.href = './designer/index.html';
+    } else {
+      window.location.href = './client/index.html';
+    }
+  } catch (err) {
+    showError(t('auth.error.credentials'));
+    setLoading('btn-password', 'spinner-pw', 'btn-pw-text', false);
+  }
+}
+
+// ── Magic link ────────────────────────────────────────────────
+async function submitMagic(e) {
+  e.preventDefault();
+  hideError();
+  const email = document.getElementById('magic-email').value.trim();
+  setLoading('btn-magic', 'spinner-magic', 'btn-magic-text', true, t('auth.magic.send'));
+  try {
+    await signInMagicLink(email);
+    document.getElementById('form-magic').style.display   = 'none';
+    document.getElementById('success-magic').style.display = 'flex';
+  } catch (err) {
+    showError(t('auth.error.email'));
+    setLoading('btn-magic', 'spinner-magic', 'btn-magic-text', false, t('auth.magic.send'));
+  }
+}
+
+// ── Auth check on load ────────────────────────────────────────
+async function init() {
+  const user = await getUser();
+  if (user) {
+    const profile = await getProfile(user.id);
+    if (profile?.role === 'developer' || profile?.role === 'admin') {
+      window.location.href = './admin/index.html';
+      return;
+    } else if (profile?.role === 'designer') {
+      window.location.href = './designer/index.html';
+      return;
+    } else if (profile?.role === 'client') {
+      window.location.href = './client/index.html';
+      return;
+    }
+  }
+}
+
+async function handleGoogleLogin() {
+  try {
+    await signInWithGoogle();
+  } catch(e) {
+    showError(t('auth.error.credentials'));
+  }
+}
+
+function togglePw() {
+  const input = document.getElementById('pw-password');
+  const eyeOff = document.getElementById('pw-eye-off');
+  const eyeOn = document.getElementById('pw-eye-on');
+  const toggle = document.getElementById('pw-toggle');
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  eyeOff.style.display = isHidden ? 'none' : '';
+  eyeOn.style.display = isHidden ? '' : 'none';
+  toggle.title = t(isHidden ? 'auth.password.hide' : 'auth.password.show');
+  toggle.setAttribute('data-i18n-title', isHidden ? 'auth.password.hide' : 'auth.password.show');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  translatePage();
+  document.title = t('auth.page.title');
+  init();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "version": 2,
+  "functions": {
+    "api/webhook.js": { "maxDuration": 10 },
+    "api/form-submit.js": { "maxDuration": 60 },
+    "api/notify-status.js": { "maxDuration": 10 },
+    "api/delete-account.js": { "maxDuration": 15 },
+    "api/upload-brief-file.js": { "maxDuration": 30 }
+  },
+  "routes": [
+    { "src": "/api/test-email",         "dest": "/api/test-email.js" },
+    { "src": "/api/fix-dashes",        "dest": "/api/fix-dashes.js" },
+    { "src": "/api/upload-brief-file", "dest": "/api/upload-brief-file.js" },
+    { "src": "/api/notify-designer",   "dest": "/api/notify-designer.js" },
+    { "src": "/api/webhook",          "dest": "/api/webhook.js"     },
+    { "src": "/api/form-submit",      "dest": "/api/form-submit.js" },
+    { "src": "/api/create-account",   "dest": "/api/create-account.js" },
+    { "src": "/api/delete-account",   "dest": "/api/delete-account.js" },
+    { "src": "/api/notify-status",   "dest": "/api/notify-status.js"  },
+    { "src": "/form",                 "dest": "/form.html"          },
+    { "src": "/admin",                "dest": "/admin/index.html"   },
+    { "src": "/admin/index",          "dest": "/admin/index.html"   },
+    { "src": "/admin/client",         "dest": "/admin/client.html"  },
+    { "src": "/admin/project",        "dest": "/admin/project.html" },
+    { "src": "/designer",             "dest": "/designer/index.html" },
+    { "src": "/designer/index",       "dest": "/designer/index.html" },
+    { "src": "/designer/project",     "dest": "/designer/project.html"},
+    { "src": "/designer/messages",    "dest": "/designer/messages.html"},
+    { "src": "/client",               "dest": "/client/index.html"  },
+    { "src": "/client/index",         "dest": "/client/index.html"  },
+    { "src": "/client/project",       "dest": "/client/project.html"},
+    { "src": "/client/brief",         "dest": "/client/brief.html"  },
+    { "src": "/client/revision",     "dest": "/client/revision.html"},
+    { "src": "/client/signup",       "dest": "/client/signup.html"  },
+    { "src": "/privacy",              "dest": "/privacy.html"       },
+    { "src": "/login",                "dest": "/login.html"         },
+    { "src": "/",                     "dest": "/login.html"         }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    }
+  ]
+}

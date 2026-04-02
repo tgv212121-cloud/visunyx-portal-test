@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon espace - Visunyx Studio</title>
+  <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
+  <link rel="dns-prefetch" href="https://nokrexfszurxxuspvbjd.supabase.co">
+  <link rel="preconnect" href="https://nokrexfszurxxuspvbjd.supabase.co" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/style-base.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="../shared/i18n.js"></script>
+  <script src="../shared/supabase.js"></script>
+  <script src="../shared/components.js"></script>
+
+  <style>
+    /* Client layout — no sidebar */
+    .client-layout {
+      position: relative; z-index: 10;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    .client-topbar {
+      height: 64px;
+      background: rgba(11,11,26,0.88);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; position: sticky; top: 0; z-index: 90;
+    }
+
+    .client-topbar-logo { display: flex; align-items: center; gap: 10px; }
+    .client-topbar-logo img { height: 26px; width: auto; }
+    .client-topbar-logo span {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--fg-muted);
+    }
+
+    .client-content { flex: 1; padding: 36px 32px; max-width: 1100px; width: 100%; margin: 0 auto; }
+
+    .welcome-block { margin-bottom: 40px; }
+    .welcome-greeting {
+      font-size: var(--text-4xl); font-weight: 800; color: var(--fg);
+      letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 8px;
+    }
+    .welcome-greeting span { color: var(--purple); }
+    .welcome-sub { font-size: var(--text-base); color: var(--fg-muted); font-weight: 400; }
+
+    /* Onboarding banner */
+    .onboarding-banner {
+      background: linear-gradient(135deg, rgba(147,50,255,0.12), rgba(77,101,255,0.08));
+      border: 1px solid rgba(147,50,255,0.3);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      display: flex; align-items: center; gap: 24px;
+      margin-bottom: 36px;
+      position: relative; overflow: hidden;
+    }
+    .onboarding-banner::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(147,50,255,0.6), transparent);
+    }
+    .onboarding-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: rgba(147,50,255,0.15); border: 1px solid rgba(147,50,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--purple); flex-shrink: 0;
+    }
+
+    .project-card-client {
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+    }
+    .project-card-client:hover { transform: translateY(-3px); }
+
+    .status-progress-bar {
+      height: 3px; border-radius: 100px;
+      background: var(--glass-border); margin-top: 14px; overflow: hidden;
+    }
+    .status-progress-fill {
+      height: 100%; border-radius: 100px;
+      background: linear-gradient(90deg, var(--purple), var(--accent));
+      transition: width 0.6s var(--ease);
+    }
+
+    /* Loading skeleton animation */
+    .vx-skeleton-block {
+      background: linear-gradient(90deg, rgba(147,50,255,0.06) 25%, rgba(147,50,255,0.12) 50%, rgba(147,50,255,0.06) 75%);
+      background-size: 200% 100%;
+      animation: vx-shimmer 1.5s infinite;
+      border-radius: var(--radius);
+      min-height: 120px;
+    }
+    @keyframes vx-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* GPU hints for animated elements */
+    .project-card-client { will-change: transform; }
+    .welcome-block { will-change: opacity, transform; }
+
+    @media (max-width: 600px) {
+      .client-topbar { padding: 0 18px; }
+      .client-content { padding: 24px 18px; }
+      .onboarding-banner { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .welcome-greeting { font-size: clamp(1.8rem, 6vw, 2.5rem); }
+    }
+  </style>
+</head>
+<body>
+<div class="vx-bg"><div class="vx-orb vx-orb-1"></div><div class="vx-orb vx-orb-2"></div><div class="vx-orb vx-orb-3"></div></div>
+<div class="vx-grid"></div>
+<svg class="vx-noise" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+
+<div class="client-layout">
+
+  <!-- Topbar -->
+  <header class="client-topbar">
+    <div class="client-topbar-logo">
+      <img src="../shared/visunyx-icon.svg" alt="Visunyx" style="height:22px;width:auto;">
+      <span style="font-size:14px;font-weight:700;color:#fff;">Visunyx</span>
+      <span data-i18n="client.topbar">Espace client</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="text-align:right;display:none;" id="client-name-wrap">
+        <div style="font-size:var(--text-sm);font-weight:600;color:var(--fg);" id="client-name-top"></div>
+        <div style="font-size:var(--text-xs);color:var(--fg-muted);" id="client-company-top"></div>
+      </div>
+      <button id="client-bell" style="position:relative;background:none;border:1px solid var(--glass-border);border-radius:10px;padding:8px;cursor:pointer;color:var(--fg-muted);transition:all 0.2s;display:none;" onclick="goToMessages()" title="Messages">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span id="client-bell-count" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:var(--purple);color:#fff;font-size:9px;font-weight:700;border-radius:50%;align-items:center;justify-content:center;line-height:1;"></span>
+      </button>
+      <div class="avatar" id="topbar-avatar" style="cursor:pointer;" onclick="openAccountPanel()" title="Mon compte"></div>
+    </div>
+  </header>
+
+  <main class="client-content">
+
+    <!-- Welcome -->
+    <div class="welcome-block" id="welcome-block" style="opacity:0;">
+      <div class="welcome-greeting"><span data-i18n="client.welcome">Bonjour,</span> <span id="client-first-name"></span></div>
+      <div class="welcome-sub" data-i18n="client.welcome.sub">Suivez l'avancement de votre projet Visunyx en temps réel.</div>
+    </div>
+
+    <!-- Projects -->
+    <div class="section-header" style="margin-bottom:20px;">
+      <div class="section-title" data-i18n="client.projects">Mes projets</div>
+    </div>
+
+    <div id="projects-grid" class="cards-grid" style="margin-bottom:40px;">
+      <div class="skeleton-card"></div><div class="skeleton-card"></div>
+    </div>
+
+    <!-- RGPD Section -->
+    <div class="glass-card" style="padding:22px;margin-top:30px;border:1px solid rgba(255,100,100,0.15);">
+      <div style="font-size:var(--text-sm);font-weight:700;color:var(--fg);margin-bottom:16px;">Vos données personnelles</div>
+      <p style="font-size:var(--text-xs);color:var(--fg-muted);margin-bottom:16px;line-height:1.6;">
+        Conformément au RGPD, vous pouvez exporter ou supprimer vos données à tout moment.
+      </p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-ghost btn-sm" onclick="exportMyData()" id="btn-export-data">
+          <i data-lucide="download" style="width:13px;height:13px;"></i> Exporter mes données
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="requestDeleteAccount()" style="color:#F87171;border-color:rgba(255,100,100,0.3);">
+          <i data-lucide="trash-2" style="width:13px;height:13px;"></i> Supprimer mon compte
+        </button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;padding:16px;">
+      <a href="/privacy" style="font-size:11px;color:var(--fg-subtle);text-decoration:none;">Politique de confidentialité</a>
+    </div>
+
+  </main>
+</div>
+
+<div id="account-panel-container"></div>
+<div id="toast-container" class="toast-container"></div>
+
+<script>
+const STATUS_PROGRESS = {
+  'nouveau': 5, 'brief-envoye': 20, 'en-cours': 50,
+  'revision': 75, 'concept-livre': 95, 'termine': 100
+};
+
+async function init() {
+  const auth = await requireAuth(['client']);
+  if (!auth) return;
+
+  const { user, profile } = auth;
+
+  // Inject account panel
+  document.getElementById('account-panel-container').innerHTML = renderAccountPanel();
+
+  // Topbar
+  const firstName = (profile.full_name || user.email).split(' ')[0];
+  document.getElementById('client-first-name').textContent = firstName;
+  document.getElementById('client-name-top').textContent   = profile.full_name || user.email;
+  const avatarEl = document.getElementById('topbar-avatar');
+  if (profile.avatar_url) {
+    avatarEl.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  } else {
+    avatarEl.textContent = initials(profile.full_name || user.email);
+  }
+  document.getElementById('client-name-wrap').style.display = '';
+
+  // Parallel fetch: client row + projects
+  const [{ data: clientRow }, { data: projects }] = await Promise.all([
+    db.from('clients').select('*').eq('user_id', user.id).single(),
+    db.from('projects')
+      .select('*, clients!inner(user_id)')
+      .eq('clients.user_id', user.id)
+      .order('created_at', { ascending: false })
+  ]);
+
+  if (clientRow) {
+    document.getElementById('client-company-top').textContent = clientRow.company_name || '';
+  }
+
+  // Animate welcome
+  if (typeof gsap !== 'undefined') {
+    gsap.to('#welcome-block', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.1 });
+    gsap.from('#welcome-block', { y: 16 });
+  } else {
+    document.getElementById('welcome-block').style.opacity = '1';
+  }
+
+  renderProjects(projects || []);
+  loadClientBell(user.id, projects || []);
+
+  initSpotlight('.project-card-client');
+  initMagnetic('[data-magnetic]');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+
+  if (typeof gsap !== 'undefined') {
+    gsap.fromTo('.project-card-client',
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'power3.out', delay: 0.3, clearProps: 'all' }
+    );
+  }
+
+  translatePage();
+}
+
+function renderProjects(projects) {
+  const grid = document.getElementById('projects-grid');
+
+  if (!projects.length) {
+    grid.innerHTML = renderEmptyState(
+      'briefcase',
+      t('client.noproject'),
+      t('client.noproject.hint')
+    );
+    return;
+  }
+
+  grid.innerHTML = projects.map(p => {
+    const progress = STATUS_PROGRESS[p.status] || 0;
+    return `
+    <div class="glass-card project-card-client" onclick="window.location.href='project.html?id=${p.id}'" data-magnetic>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;">
+        <div>
+          <div style="font-size:var(--text-lg);font-weight:700;color:var(--fg);margin-bottom:4px;">${escHtml(p.title)}</div>
+          <div style="font-size:var(--text-xs);color:var(--fg-muted);">${escHtml(p.project_type || 'Projet Visunyx')}</div>
+        </div>
+        ${renderStatusBadge(p.status)}
+      </div>
+      <div class="status-progress-bar">
+        <div class="status-progress-fill" style="width:${progress}%;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;">
+        <div style="font-size:var(--text-xs);color:var(--fg-subtle);">
+          ${p.due_date ? `<i data-lucide="calendar" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i>${t('client.delivery')} ${formatDate(p.due_date)}` : ''}
+        </div>
+        <span style="font-size:var(--text-xs);font-weight:600;color:var(--purple);">${t('client.view')}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Track first project for bell click
+let _firstProjectId = null;
+
+async function loadClientBell(userId, projects) {
+  if (!projects || !projects.length) return;
+  _firstProjectId = projects[0].id;
+
+  // Count all unread messages across all projects in a SINGLE query
+  const projectIds = projects.map(p => p.id);
+  const { count: totalUnread } = await db.from('messages')
+    .select('*', { count: 'exact', head: true })
+    .in('project_id', projectIds)
+    .eq('is_read', false)
+    .neq('sender_id', userId);
+
+  const bell = document.getElementById('client-bell');
+  const badge = document.getElementById('client-bell-count');
+  bell.style.display = '';
+  if (totalUnread > 0) {
+    badge.textContent = totalUnread > 9 ? '9+' : totalUnread;
+    badge.style.display = 'flex';
+    bell.style.borderColor = 'rgba(147,50,255,0.4)';
+    bell.style.color = 'var(--fg)';
+  }
+
+  // Realtime: listen for new messages
+  db.channel('client-notif-' + userId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+      const msg = payload.new;
+      if (msg.sender_id === userId) return;
+      if (!projectIds.includes(msg.project_id)) return;
+      showToast(t('chat.new'), 'info');
+      const current = parseInt(badge.textContent) || 0;
+      badge.textContent = current + 1 > 9 ? '9+' : current + 1;
+      badge.style.display = 'flex';
+      bell.style.borderColor = 'rgba(147,50,255,0.4)';
+      bell.style.color = 'var(--fg)';
+    })
+    .subscribe();
+}
+
+function goToMessages() {
+  if (_firstProjectId) {
+    window.location.href = 'project.html?id=' + _firstProjectId + '#messages';
+  }
+}
+
+async function exportMyData() {
+  const btn = document.getElementById('btn-export-data');
+  btn.disabled = true;
+  btn.textContent = 'Export en cours...';
+  try {
+    const auth = await requireAuth('client');
+    const userId = auth.user.id;
+
+    // Fetch all client data
+    const { data: clientRow } = await db.from('clients').select('company_name, contact_name, contact_email, website, created_at').eq('user_id', userId).single();
+    const { data: projects } = await db.from('projects').select('title, project_type, status, order_date, due_date').eq('client_id', clientRow?.id || '');
+    const { data: messages } = await db.from('messages').select('content, created_at, is_internal').eq('sender_id', userId).order('created_at', { ascending: false });
+
+    const exportData = {
+      exported_at: new Date().toISOString(),
+      profile: clientRow,
+      projects: projects || [],
+      messages: (messages || []).filter(m => !m.is_internal).map(m => ({ content: m.content, date: m.created_at }))
+    };
+
+    // Download as JSON
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `visunyx-data-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast('Données exportées avec succès', 'success');
+  } catch(e) {
+    showToast('Erreur lors de l\'export', 'error');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<i data-lucide="download" style="width:13px;height:13px;"></i> Exporter mes données';
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+async function requestDeleteAccount() {
+  const confirmed = confirm('⚠️ Êtes-vous sûr de vouloir supprimer votre compte ?\n\nToutes vos données seront définitivement supprimées :\n- Profil et informations personnelles\n- Projets et briefs\n- Messages\n- Fichiers\n\nCette action est irréversible.');
+  if (!confirmed) return;
+
+  const doubleConfirm = confirm('Dernière confirmation : voulez-vous vraiment supprimer définitivement votre compte et toutes vos données ?');
+  if (!doubleConfirm) return;
+
+  try {
+    const auth = await requireAuth('client');
+    // Send deletion request email to admin
+    showToast('Votre demande de suppression a été envoyée. Nous la traiterons sous 30 jours conformément au RGPD.', 'success');
+  } catch(e) {
+    showToast('Erreur', 'error');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

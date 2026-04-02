@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mes projets - Visunyx Designer</title>
+  <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
+  <link rel="dns-prefetch" href="https://nokrexfszurxxuspvbjd.supabase.co">
+  <link rel="preconnect" href="https://nokrexfszurxxuspvbjd.supabase.co" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/style-base.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="../shared/i18n.js"></script>
+  <script src="../shared/supabase.js"></script>
+  <script src="../shared/components.js"></script>
+</head>
+<body>
+<div class="vx-bg"><div class="vx-orb vx-orb-1"></div><div class="vx-orb vx-orb-2"></div><div class="vx-orb vx-orb-3"></div></div>
+<div class="vx-grid"></div>
+<svg class="vx-noise" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+
+<div class="app-layout">
+  <div id="sidebar-container"></div>
+  <div class="main-content">
+    <div id="topbar-container"></div>
+    <div class="page-content">
+
+      <!-- Stats -->
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:28px;" id="stats-grid">
+        <div class="glass-card stat-card"><div class="skeleton" style="height:40px;width:40px;border-radius:8px;margin-bottom:14px;"></div><div class="skeleton" style="height:32px;width:60px;margin-bottom:6px;"></div><div class="skeleton" style="height:12px;width:100px;"></div></div>
+        <div class="glass-card stat-card"><div class="skeleton" style="height:40px;width:40px;border-radius:8px;margin-bottom:14px;"></div><div class="skeleton" style="height:32px;width:60px;margin-bottom:6px;"></div><div class="skeleton" style="height:12px;width:100px;"></div></div>
+        <div class="glass-card stat-card"><div class="skeleton" style="height:40px;width:40px;border-radius:8px;margin-bottom:14px;"></div><div class="skeleton" style="height:32px;width:60px;margin-bottom:6px;"></div><div class="skeleton" style="height:12px;width:100px;"></div></div>
+      </div>
+
+      <div class="section-header" style="margin-bottom:20px;">
+        <div class="section-title" data-i18n="designer.myprojects">Mes projets assignes</div>
+      </div>
+
+      <div id="projects-grid" class="cards-grid">
+        <div class="skeleton-card"></div><div class="skeleton-card"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script>
+async function init() {
+  const auth = await requireAuth(['designer']);
+  if (!auth) return;
+  const { user, profile } = auth;
+
+  document.getElementById('sidebar-container').innerHTML = renderSidebar('dashboard', 0, 'designer');
+  document.getElementById('topbar-container').innerHTML = renderTopbar(
+    t('designer.space'),
+    `${t('client.welcome')} ${profile.full_name || user.email}`
+  );
+  await setupSidebarUser();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+
+  const projects = await API.getMyDesignerProjects(user.id);
+  renderStats(projects);
+  renderProjects(projects);
+
+  initSpotlight();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+
+  translatePage();
+
+  if (typeof gsap !== 'undefined') {
+    gsap.fromTo('.project-card',
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'power3.out', delay: 0.2, clearProps: 'all' }
+    );
+  }
+}
+
+function renderStats(projects) {
+  const active = projects.filter(p => ['en-cours','revision','brief-envoye'].includes(p.status)).length;
+  const delivered = projects.filter(p => p.status === 'concept-livre' || p.status === 'termine').length;
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="glass-card stat-card">
+      <div class="stat-icon"><i data-lucide="briefcase" style="width:20px;height:20px;"></i></div>
+      <div class="stat-value">${projects.length}</div>
+      <div class="stat-label">${t('designer.stat.assigned')}</div>
+    </div>
+    <div class="glass-card stat-card">
+      <div class="stat-icon"><i data-lucide="loader" style="width:20px;height:20px;"></i></div>
+      <div class="stat-value">${active}</div>
+      <div class="stat-label">${t('designer.stat.active')}</div>
+    </div>
+    <div class="glass-card stat-card">
+      <div class="stat-icon"><i data-lucide="check-circle" style="width:20px;height:20px;"></i></div>
+      <div class="stat-value">${delivered}</div>
+      <div class="stat-label">${t('designer.stat.delivered')}</div>
+    </div>`;
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function renderProjects(projects) {
+  const grid = document.getElementById('projects-grid');
+  if (!projects.length) {
+    grid.innerHTML = renderEmptyState('briefcase', t('designer.noproject'), t('designer.noproject.hint'));
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+  grid.innerHTML = projects.map(p => {
+    return `
+    <div class="glass-card project-card" onclick="window.location.href='./project.html?id=${p.id}'" data-magnetic style="padding:22px;cursor:pointer;">
+      <div class="project-card-header">
+        <div>
+          <div class="project-card-title">${escHtml(p.title)}</div>
+        </div>
+        ${renderStatusBadge(p.status)}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${renderPriorityBadge(p.priority)}
+        ${p.project_type ? `<span class="badge" style="background:var(--bg-card);border:1px solid var(--glass-border);color:var(--fg-muted);">${escHtml(p.project_type)}</span>` : ''}
+      </div>
+      <div class="project-card-meta">
+        <span class="project-card-date">
+          <i data-lucide="calendar" style="width:11px;height:11px;"></i>
+          ${formatDate(p.due_date || p.order_date)}
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

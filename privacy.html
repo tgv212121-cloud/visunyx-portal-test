@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Politique de confidentialité - Visunyx Studio</title>
+  <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --purple:#9332FF;--purple-mid:#5B1FA8;--accent:#4D65FF;
+      --bg:#0B0B1A;--fg:#F0EEFF;--fg-muted:rgba(240,238,255,0.55);--fg-subtle:rgba(240,238,255,0.28);
+      --glass:rgba(147,50,255,0.07);--glass-b:rgba(147,50,255,0.18);
+      --font:'Montserrat',sans-serif;--r:16px;
+    }
+    html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+    ::selection{background:rgba(147,50,255,0.3)}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(147,50,255,0.2);border-radius:100px}
+
+    .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);animation:drift linear infinite}
+    .orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(147,50,255,0.15) 0%,transparent 70%);top:-200px;left:-150px;animation-duration:28s}
+    .orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(77,101,255,0.10) 0%,transparent 70%);bottom:-100px;right:-80px;animation-duration:34s;animation-direction:reverse}
+    @keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(24px,-16px)}50%{transform:translate(-14px,22px)}75%{transform:translate(16px,10px)}}
+    .grid{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(147,50,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(147,50,255,0.04) 1px,transparent 1px);background-size:52px 52px}
+
+    .container{position:relative;z-index:10;max-width:780px;margin:0 auto;padding:80px 24px 60px}
+
+    .back-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:600;color:var(--fg-muted);background:var(--glass);border:1px solid var(--glass-b);text-decoration:none;transition:all 0.25s;margin-bottom:40px}
+    .back-btn:hover{color:var(--fg);border-color:rgba(147,50,255,0.35)}
+
+    .page-title{font-size:clamp(28px,4vw,42px);font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:8px}
+    .page-title em{font-style:normal;background:linear-gradient(135deg,var(--purple),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .page-sub{font-size:14px;color:var(--fg-muted);margin-bottom:48px}
+
+    .section{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);padding:32px;margin-bottom:24px;position:relative;overflow:hidden}
+    .section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(147,50,255,0.4),transparent)}
+    .section h2{font-size:18px;font-weight:700;color:var(--fg);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+    .section h2 .icon{width:32px;height:32px;border-radius:8px;background:rgba(147,50,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .section p,.section li{font-size:14px;line-height:1.8;color:var(--fg-muted)}
+    .section ul{list-style:none;padding:0}
+    .section li{padding-left:20px;position:relative;margin-bottom:6px}
+    .section li::before{content:'';position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:50%;background:var(--purple)}
+    .section a{color:var(--purple);text-decoration:underline}
+
+    .footer{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid rgba(147,50,255,0.1);font-size:12px;color:var(--fg-subtle)}
+
+    @media(max-width:600px){.container{padding:60px 16px 40px}.section{padding:24px 18px}}
+  </style>
+</head>
+<body>
+
+<div class="bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+<div class="grid"></div>
+
+<div class="container">
+
+  <a href="javascript:history.back()" class="back-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Retour
+  </a>
+
+  <h1 class="page-title">Politique de <em>confidentialité</em></h1>
+  <p class="page-sub">Dernière mise à jour : avril 2026</p>
+
+  <!-- Responsable du traitement -->
+  <div class="section">
+    <h2>
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+      Responsable du traitement
+    </h2>
+    <p>Le responsable du traitement des données personnelles est <strong>Visunyx Studio</strong>.</p>
+    <p style="margin-top:8px;">Pour toute question relative à la protection de vos données, vous pouvez nous contacter à l'adresse : <a href="mailto:contact@visunyx.com">contact@visunyx.com</a></p>
+  </div>
+
+  <!-- Données collectées -->
+  <div class="section">
+    <h2>
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+      Données collectées
+    </h2>
+    <p>Dans le cadre de nos services, nous collectons les données suivantes :</p>
+    <ul style="margin-top:12px;">
+      <li>Nom et prénom</li>
+      <li>Adresse e-mail</li>
+      <li>Nom de l'entreprise</li>
+      <li>Site web</li>
+      <li>Messages et réponses au questionnaire de brief</li>
+      <li>Fichiers transmis (logos, références visuelles)</li>
+    </ul>
+  </div>
+
+  <!-- Base légale -->
+  <div class="section">
+    <h2>
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      Base légale du traitement
+    </h2>
+    <p>Le traitement de vos données repose sur :</p>
+    <ul style="margin-top:12px;">
+      <li><strong>L'exécution d'un contrat :</strong> vos données sont nécessaires à la réalisation de la prestation de création d'identité visuelle que vous avez commandée.</li>
+      <li><strong>Le consentement :</strong> vous consentez expressément au traitement de vos données en validant le formulaire de brief.</li>
+    </ul>
+  </div>
+
+  <!-- Durée de conservation -->
+  <div class="section">
+    <h2>
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      Durée de conservation
+    </h2>
+    <p>Vos données personnelles sont conservées pendant toute la durée du projet, puis pendant une période de <strong>3 ans</strong> après la fin de la prestation, conformément aux obligations légales et à des fins de suivi client.</p>
+    <p style="margin-top:8px;">À l'issue de cette période, vos données sont supprimées ou anonymisées.</p>
+  </div>
+
+  <!-- Droits -->
+  <div class="section">
+    <h2>
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      Vos droits
+    </h2>
+    <p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants :</p>
+    <ul style="margin-top:12px;">
+      <li><strong>Droit d'accès :</strong> obtenir une copie de vos données personnelles</li>
+      <li><strong>Droit de rectification :</strong> corriger des données inexactes ou incomplètes</li>
+      <li><strong>Droit de suppression :</strong> demander l'effacement de vos données</li>
+      <li><strong>Droit à la portabilité :</strong> recevoir vos données dans un format structuré et lisible</li>
+      <li><strong>Droit d'opposition :</strong> vous opposer au traitement de vos données pour des motifs légitimes</li>
+    </ul>
+    <p style="margin-top:12px;">Pour exercer vos droits, contactez-nous à <a href="mailto:contact@visunyx.com">contact@visunyx.com</a>. Nous répondrons dans un délai de 30 jours.</p>
+  </div>
+
+  <!-- Sécurité -->
+  <div class="section">
+    <h2>
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>
+      Sécurité des données
+    </h2>
+    <p>Nous mettons en oeuvre des mesures techniques et organisationnelles appropriées pour protéger vos données :</p>
+    <ul style="margin-top:12px;">
+      <li><strong>Chiffrement HTTPS :</strong> toutes les communications sont chiffrées via TLS/SSL</li>
+      <li><strong>Base de données sécurisée :</strong> accès restreint par authentification et politiques de sécurité (RLS)</li>
+      <li><strong>Accès restreint :</strong> seules les personnes habilitées ont accès à vos données</li>
+    </ul>
+  </div>
+
+  <!-- Hébergement -->
+  <div class="section">
+    <h2>
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></span>
+      Hébergement et transferts de données
+    </h2>
+    <p>Vos données sont hébergées par les prestataires suivants :</p>
+    <ul style="margin-top:12px;">
+      <li><strong>Vercel Inc.</strong> (USA) - hébergement de l'application web</li>
+      <li><strong>Supabase</strong> (AWS, région EU) - base de données et stockage de fichiers</li>
+    </ul>
+    <p style="margin-top:12px;">Les transferts de données hors de l'Union européenne sont encadrés par des <strong>clauses contractuelles types</strong> (CCT) approuvées par la Commission européenne, garantissant un niveau de protection adéquat de vos données.</p>
+  </div>
+
+  <!-- Contact -->
+  <div class="section">
+    <h2>
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+      Contact
+    </h2>
+    <p>Pour toute question concernant cette politique de confidentialité ou pour exercer vos droits, contactez-nous :</p>
+    <p style="margin-top:12px;"><strong>Visunyx Studio</strong><br>E-mail : <a href="mailto:contact@visunyx.com">contact@visunyx.com</a></p>
+    <p style="margin-top:12px;">Vous disposez également du droit d'introduire une réclamation auprès de la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) si vous estimez que le traitement de vos données ne respecte pas la réglementation en vigueur.</p>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 Visunyx Studio. Tous droits réservés.
+  </div>
+
+</div>
+
+</body>
+</html>

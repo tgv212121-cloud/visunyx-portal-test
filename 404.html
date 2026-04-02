@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page introuvable - Visunyx Studio</title>
+  <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B0B1A;color:#F0EEFF;font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased}
+    .wrap{text-align:center;padding:40px 20px;max-width:440px}
+    .code{font-size:clamp(80px,15vw,140px);font-weight:800;background:linear-gradient(135deg,#9332FF,#4D65FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+    .title{font-size:clamp(18px,3vw,24px);font-weight:700;margin:16px 0 10px}
+    .sub{font-size:14px;color:rgba(240,238,255,0.5);line-height:1.7;margin-bottom:32px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,#9332FF,#4D65FF);color:#fff;font-family:inherit;font-size:13px;font-weight:700;border:none;border-radius:10px;cursor:pointer;text-decoration:none;box-shadow:0 4px 20px rgba(147,50,255,0.4);transition:all 0.25s}
+    .btn:hover{box-shadow:0 6px 28px rgba(147,50,255,0.55);transform:translateY(-2px)}
+  </style>
+  <script src="./shared/i18n.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="code">404</div>
+    <div class="title" data-i18n="error.404">Page introuvable</div>
+    <p class="sub" data-i18n="error.404.hint">La page que vous cherchez n'existe pas ou a été déplacée.</p>
+    <a href="/login.html" class="btn" data-i18n="error.404.back">Retour à l'accueil</a>
+  </div>
+  <script>document.addEventListener('DOMContentLoaded', () => { if (typeof translatePage === 'function') translatePage(); });</script>
+</body>
+</html>

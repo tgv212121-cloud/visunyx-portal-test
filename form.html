@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brief de marque - Visunyx Studio</title>
+  <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="./shared/i18n.js"></script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --purple:#9332FF;--purple-mid:#5B1FA8;--accent:#4D65FF;
+      --bg:#0B0B1A;--fg:#F0EEFF;--fg-muted:rgba(240,238,255,0.55);--fg-subtle:rgba(240,238,255,0.28);
+      --glass:rgba(147,50,255,0.07);--glass-b:rgba(147,50,255,0.18);--glass-bh:rgba(147,50,255,0.35);
+      --input-bg:rgba(255,255,255,0.04);--ease:cubic-bezier(0.22,1,0.36,1);--font:'Montserrat',sans-serif;--r:16px;
+    }
+    html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+    ::selection{background:rgba(147,50,255,0.3)}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(147,50,255,0.2);border-radius:100px}
+
+    .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);animation:drift linear infinite}
+    .orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(147,50,255,0.15) 0%,transparent 70%);top:-200px;left:-150px;animation-duration:28s}
+    .orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(77,101,255,0.10) 0%,transparent 70%);bottom:-100px;right:-80px;animation-duration:34s;animation-direction:reverse}
+    @keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(24px,-16px)}50%{transform:translate(-14px,22px)}75%{transform:translate(16px,10px)}}
+    .grid{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(147,50,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(147,50,255,0.04) 1px,transparent 1px);background-size:52px 52px}
+
+    .progress-bar{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(147,50,255,0.12);z-index:200}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--purple-mid),var(--purple),var(--accent));transition:width 0.5s var(--ease);position:relative}
+    .progress-fill::after{content:'';position:absolute;right:-1px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px 2px var(--purple)}
+
+    .topbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 32px 0;pointer-events:none}
+    .topbar a{pointer-events:all;display:flex;align-items:center;gap:8px;text-decoration:none}
+    .topbar img{height:22px}
+    .topbar span{font-size:14px;font-weight:700;color:#fff}
+    .step-counter{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--fg-muted);pointer-events:all}
+
+    .app{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:90px 20px 40px}
+
+    /* Welcome */
+    .welcome{width:100%;max-width:620px;text-align:center}
+    .tag{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;margin-bottom:24px;background:rgba(147,50,255,0.1);border:1px solid rgba(147,50,255,0.3);border-radius:100px;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg)}
+    .tag-dot{width:5px;height:5px;background:var(--purple);border-radius:50%;animation:blink 2s ease infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+    .welcome-title{font-size:clamp(32px,5vw,58px);font-weight:800;line-height:1.08;letter-spacing:-0.02em;margin-bottom:16px}
+    .welcome-title em{font-style:normal;background:linear-gradient(135deg,var(--purple),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .welcome-sub{font-size:15px;font-weight:400;line-height:1.75;color:var(--fg-muted);max-width:420px;margin:0 auto 36px}
+    .meta-pills{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:40px}
+    .meta-pill{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--fg-muted)}
+    .meta-sep{width:1px;height:12px;background:rgba(255,255,255,0.1)}
+
+    /* Card */
+    .q-card{width:100%;max-width:660px;background:var(--glass);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--glass-b);border-radius:var(--r);padding:44px 48px;position:relative;overflow:hidden;box-shadow:0 0 0 1px rgba(147,50,255,0.04),0 32px 80px rgba(0,0,0,0.6)}
+    .q-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(147,50,255,0.5),transparent)}
+    .q-card::after{content:'';position:absolute;inset:0;background:radial-gradient(500px circle at var(--mx,50%) var(--my,50%),rgba(147,50,255,0.05),transparent 50%);pointer-events:none;border-radius:var(--r)}
+    .step-title{font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+    .step-title::after{content:'';flex:1;height:1px;background:rgba(147,50,255,0.2)}
+    .step-heading{font-size:clamp(17px,2.8vw,22px);font-weight:700;color:var(--fg);line-height:1.25;margin-bottom:24px;letter-spacing:-0.01em}
+
+    /* Form elements */
+    .field{margin-bottom:22px}
+    .field-label{display:block;font-size:13px;font-weight:600;color:var(--fg);margin-bottom:8px;line-height:1.4}
+    .field-label .req{color:var(--purple);margin-left:2px}
+    .q-input,.q-textarea,.q-select{
+      width:100%;background:var(--input-bg);border:1px solid var(--glass-b);
+      border-radius:10px;padding:13px 16px;color:var(--fg);font-family:var(--font);
+      font-size:14px;font-weight:400;outline:none;
+      transition:border-color 0.2s var(--ease),box-shadow 0.2s var(--ease),background 0.2s;
+    }
+    .q-input::placeholder,.q-textarea::placeholder{color:var(--fg-subtle)}
+    .q-input:focus,.q-textarea:focus,.q-select:focus{border-color:rgba(147,50,255,0.5);background:rgba(147,50,255,0.07);box-shadow:0 0 0 3px rgba(147,50,255,0.12)}
+    .q-textarea{resize:none;min-height:100px;line-height:1.65}
+    .q-select{cursor:pointer;-webkit-appearance:none}
+    .q-select option{background:#0B0B1A}
+
+    /* Radio / Checkbox */
+    .choices{display:flex;flex-direction:column;gap:8px}
+    .choice{display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:10px;border:1px solid var(--glass-b);background:var(--input-bg);cursor:pointer;transition:all 0.2s var(--ease);font-size:13px;font-weight:500;color:var(--fg-muted)}
+    .choice:hover{border-color:rgba(147,50,255,0.4);color:var(--fg)}
+    .choice.selected{background:rgba(147,50,255,0.12);border-color:var(--purple);color:var(--fg)}
+    .choice input{display:none}
+    .choice-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--glass-b);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+    .choice.selected .choice-dot{border-color:var(--purple);background:var(--purple)}
+    .choice.selected .choice-dot::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+    .choice-box{width:18px;height:18px;border-radius:5px;border:2px solid var(--glass-b);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+    .choice.selected .choice-box{border-color:var(--purple);background:var(--purple)}
+    .choice.selected .choice-box::after{content:'';width:10px;height:7px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px)}
+
+    /* Chips (multi-select inline) */
+    .chips-grid{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:9px 16px;border-radius:100px;border:1px solid var(--glass-b);background:var(--input-bg);color:var(--fg-muted);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s var(--ease);user-select:none}
+    .chip:hover{border-color:rgba(147,50,255,0.4);color:var(--fg)}
+    .chip.selected{background:rgba(147,50,255,0.15);border-color:var(--purple);color:var(--fg);box-shadow:0 0 12px rgba(147,50,255,0.2)}
+
+    /* Nav */
+    .q-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px;gap:12px}
+    .btn-nav{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all 0.25s var(--ease);letter-spacing:0.02em}
+    .btn-back{background:var(--glass);border:1px solid var(--glass-b);color:var(--fg-muted)}
+    .btn-back:hover{color:var(--fg);border-color:var(--glass-bh)}
+    .btn-next{background:linear-gradient(135deg,var(--purple),var(--accent));background-size:200% 100%;background-position:0%;color:#fff;box-shadow:0 4px 20px rgba(147,50,255,0.4)}
+    .btn-next:hover{background-position:100%;box-shadow:0 6px 28px rgba(147,50,255,0.55);transform:translateY(-1px)}
+    .btn-next:active{transform:translateY(0)}
+    .btn-next:disabled{opacity:0.55;cursor:not-allowed;transform:none}
+
+    /* Completion */
+    .completion{width:100%;max-width:540px;text-align:center}
+    .completion-icon{width:72px;height:72px;border-radius:50%;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px}
+    .completion-title{font-size:clamp(24px,4vw,36px);font-weight:800;color:var(--fg);margin-bottom:12px;letter-spacing:-0.02em}
+    .completion-sub{font-size:15px;color:var(--fg-muted);line-height:1.75;max-width:400px;margin:0 auto 32px}
+
+    /* Error shake */
+    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+    .shake{animation:shake 0.4s}
+
+    .screen{display:none}.screen.active{display:block}
+    @media(max-width:600px){.q-card{padding:28px 20px}.topbar{padding:16px 18px 0}}
+    @media(prefers-reduced-motion:reduce){.orb{animation:none!important}}
+  </style>
+</head>
+<body>
+
+<div class="bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+<div class="grid"></div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="topbar">
+  <a href="https://visunyx.com" target="_blank">
+    <img src="./shared/visunyx-icon.svg" alt="Visunyx">
+    <span>Visunyx</span>
+  </a>
+  <div class="step-counter" id="step-counter" style="opacity:0"></div>
+</div>
+
+<div class="app" id="app">
+
+  <!-- Welcome -->
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome">
+      <h1 class="welcome-title" data-i18n="form.welcome.title">Parlez-nous de votre projet</h1>
+      <p class="welcome-sub" data-i18n="form.welcome.sub">Pour concevoir une identité visuelle à votre image, nous avons besoin d'en savoir plus sur votre marque, votre activité et vos préférences. Cela prend environ 8 minutes.</p>
+      <div class="meta-pills">
+        <div class="meta-pill"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="form.mins">~8 min</span></div>
+        <div class="meta-sep"></div>
+        <div class="meta-pill"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span data-i18n="form.confidential">Confidentiel</span></div>
+        <div class="meta-sep"></div>
+        <div class="meta-pill"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> <span data-i18n="form.steps">4 étapes</span></div>
+      </div>
+      <button class="btn-nav btn-next" onclick="startForm()" style="padding:14px 40px;font-size:15px;">
+        <span data-i18n="form.start">Commencer</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step screens -->
+  <div class="screen" id="screen-form">
+    <div class="q-card" id="q-card">
+      <div class="step-title" id="step-title">Étape 1 / 4</div>
+      <div class="step-heading" id="step-heading"></div>
+      <div id="step-fields"></div>
+      <div class="q-nav">
+        <button class="btn-nav btn-back" id="btn-back" onclick="prevStep()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> <span data-i18n="form.back">Retour</span>
+        </button>
+        <button class="btn-nav btn-next" id="btn-next" onclick="nextStep()">
+          <span data-i18n="form.next">Suivant</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done -->
+  <div class="screen" id="screen-done">
+    <div class="completion">
+      <div class="completion-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <h2 class="completion-title">Brief envoyé !</h2>
+      <p class="completion-sub" id="done-message">Merci ! Votre brief a bien été transmis à notre équipe.</p>
+      <div style="display:flex;flex-direction:column;gap:16px;align-items:center;width:100%;max-width:420px;">
+        <div style="font-size:13px;color:var(--fg-muted);text-align:center;line-height:1.7;" id="done-details"></div>
+        <div id="done-hint" style="display:none;"></div>
+        <div id="done-email" style="display:none;"></div>
+        <a href="#" class="btn-nav btn-back" style="text-decoration:none;margin-top:8px;" id="done-cta">
+          Accéder à mon espace client
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Steps definition ──────────────────────────────────────
+const STEPS = [
+  {
+    title: 'Informations générales',
+    fields: [
+      { id: 'full_name', label: 'Vos nom et prénom', type: 'text', required: true, placeholder: 'Jean Dupont' },
+      { id: 'email', label: 'Votre adresse e-mail', type: 'email', required: true, placeholder: 'jean@example.com' },
+      { id: 'pseudo', label: 'Votre pseudo sur la plateforme', type: 'text', placeholder: '@jean_dupont' },
+      { id: 'pack', label: 'Quel pack avez-vous choisi ?', type: 'radio', required: true, options: ['Pack Essentiel (2 concepts de logo)', 'Pack Pro (3 concepts + brandboard)', 'Pack Signature (3 concepts + brandbook)'] },
+      { id: 'company_name', label: 'Nom exact de votre entreprise (apparaîtra sur le logo)', type: 'text', required: true, placeholder: 'Mon Entreprise' },
+      { id: 'company_story', label: 'Y a-t-il une histoire ou signification derrière le nom ?', type: 'textarea', required: true, placeholder: 'Racontez-nous...' },
+      { id: 'slogan', label: 'Avez-vous un slogan à intégrer ?', type: 'text', placeholder: 'Votre slogan ici...' },
+      { id: 'website', label: 'Avez-vous un site web ou page de présentation ?', type: 'url', placeholder: 'https://...' },
+    ]
+  },
+  {
+    title: 'À propos de votre activité',
+    fields: [
+      { id: 'activity', label: 'Décrivez votre domaine d\'activité, ce que vous faites, en quelques phrases bien détaillées', type: 'textarea', required: true, placeholder: 'Nous sommes une agence de...' },
+      { id: 'target', label: 'À qui s\'adresse votre offre/service (public cible) ?', type: 'textarea', required: true, placeholder: 'Entrepreneurs, PME, particuliers...' },
+      { id: 'differentiator', label: 'Pourquoi vos clients font-ils appel à vous ? Qu\'est-ce qui vous démarque ?', type: 'textarea', required: true, placeholder: 'Notre approche unique...' },
+      { id: 'competitors', label: 'Qui sont vos principaux concurrents ?', type: 'textarea', required: true, placeholder: 'Concurrent 1, Concurrent 2...' },
+    ]
+  },
+  {
+    title: 'L\'image que vous souhaitez transmettre',
+    fields: [
+      { id: 'brand_words', label: 'Quels mots décrivent l\'image de marque que vous visez ? (3 à 5 mots)', type: 'text', required: true, placeholder: 'Moderne, Premium, Innovant...' },
+      { id: 'avoid_words', label: 'Quels mots décrivent ce que vous souhaitez éviter ? (3 à 5 mots)', type: 'text', required: true, placeholder: 'Classique, Ennuyeux...' },
+      { id: 'brand_personality', label: 'Souhaitez-vous que votre marque paraisse particulièrement...', type: 'checkbox', required: true, options: ['Sérieuse et professionnelle', 'Dynamique et énergique', 'Haut de gamme / Premium', 'Accessible et conviviale', 'Minimaliste et sobre', 'Fun et créative', 'Autre'] },
+      { id: 'logo_supports', label: 'Sur quels supports votre logo sera-t-il principalement utilisé ?', type: 'checkbox', required: true, options: ['Site Web', 'Réseaux sociaux', 'Supports imprimés (flyers, cartes de visite...)', 'Produits dérivés (t-shirt, mugs, goodies...)', 'Emballages / Étiquettes', 'Signalétiques / Véhicules / Enseignes', 'Vidéos / Présentations', 'Autre'] },
+    ]
+  },
+  {
+    title: 'Vos préférences graphiques',
+    fields: [
+      { id: 'avoid_elements', label: 'Éléments graphiques, symboles ou styles à éviter absolument ?', type: 'textarea', required: true, placeholder: 'Pas de flammes, pas de style cartoon...' },
+      { id: 'preferred_colors', label: 'Des couleurs que vous souhaitez privilégier ?', type: 'text', placeholder: 'Bleu marine, or, noir...' },
+      { id: 'avoid_colors', label: 'Des couleurs à éviter ?', type: 'text', placeholder: 'Rose, orange fluo...' },
+      { id: 'logo_style', label: 'Quel style de logo préférez-vous ?', type: 'checkbox', required: true, options: ['Typographique (Texte seulement)', 'Avec symbole ou pictogramme', 'Illustratif / Abstrait', 'Peu importe'] },
+      { id: 'logo_references', label: 'Exemples de logos que vous aimez ? Ajoutez des fichiers ou images', type: 'file' },
+      { id: 'existing_logo', label: 'Si refonte : ce que vous aimez / n\'aimez plus dans votre logo actuel', type: 'textarea', placeholder: 'J\'aime la forme mais pas les couleurs...' },
+      { id: 'extra_notes', label: 'Autres informations utiles à nous transmettre ?', type: 'textarea', placeholder: 'Tout ce qui peut nous aider...' },
+    ]
+  }
+];
+
+let currentStep = 0;
+let answers = {};
+
+// ── Init ──────────────────────────────────────────────────
+function startForm() {
+  switchScreen('form');
+  document.getElementById('step-counter').style.opacity = '1';
+  renderStep(0);
+}
+
+function switchScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+}
+
+// ── Render step ───────────────────────────────────────────
+function renderStep(idx) {
+  currentStep = idx;
+  const step = STEPS[idx];
+
+  document.getElementById('progress-fill').style.width = ((idx) / STEPS.length * 100) + '%';
+  document.getElementById('step-title').textContent = `Étape ${idx + 1} / ${STEPS.length}`;
+  document.getElementById('step-counter').textContent = `${idx + 1} / ${STEPS.length}`;
+  document.getElementById('step-heading').textContent = step.title;
+  document.getElementById('btn-back').style.visibility = idx === 0 ? 'hidden' : 'visible';
+
+  const btn = document.getElementById('btn-next');
+  if (idx === STEPS.length - 1) {
+    btn.innerHTML = 'Envoyer le brief <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+  } else {
+    btn.innerHTML = 'Suivant <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+  }
+
+  const container = document.getElementById('step-fields');
+  container.innerHTML = step.fields.map(f => renderField(f)).join('');
+
+  // Add RGPD consent checkbox on last step
+  if (idx === STEPS.length - 1) {
+    container.innerHTML += `
+      <div class="field" id="consent-field" style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(147,50,255,0.15);">
+        <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;font-size:13px;color:var(--fg-muted);line-height:1.6;">
+          <input type="checkbox" id="rgpd-consent" style="
+            appearance:none;-webkit-appearance:none;width:20px;height:20px;min-width:20px;
+            border:2px solid rgba(147,50,255,0.3);border-radius:5px;background:var(--input-bg);
+            cursor:pointer;margin-top:2px;position:relative;transition:all 0.2s;
+          " onchange="this.style.background=this.checked?'var(--purple)':'var(--input-bg)';this.style.borderColor=this.checked?'var(--purple)':'rgba(147,50,255,0.3)';">
+          <span>J'accepte la <a href="/privacy" target="_blank" style="color:var(--purple);text-decoration:underline;">politique de confidentialité</a> et le traitement de mes données personnelles.<span class="req">*</span></span>
+        </label>
+        <div id="consent-error" style="display:none;color:#f87171;font-size:12px;margin-top:8px;margin-left:32px;">Vous devez accepter la politique de confidentialité pour continuer.</div>
+      </div>`;
+  }
+
+  // Restore saved values
+  step.fields.forEach(f => {
+    if (f.type === 'radio' || f.type === 'checkbox') {
+      const saved = answers[f.id];
+      if (saved) {
+        const arr = typeof saved === 'string' ? saved.split('||') : [];
+        container.querySelectorAll(`[data-field="${f.id}"] .choice`).forEach(el => {
+          if (arr.includes(el.dataset.value)) el.classList.add('selected');
+        });
+      }
+    } else {
+      const input = container.querySelector(`#field-${f.id}`);
+      if (input && answers[f.id]) input.value = answers[f.id];
+    }
+  });
+
+  // Animate
+  const card = document.getElementById('q-card');
+  card.style.opacity = '0';
+  card.style.transform = 'translateX(20px)';
+  requestAnimationFrame(() => {
+    card.style.transition = 'all 0.4s cubic-bezier(0.22,1,0.36,1)';
+    card.style.opacity = '1';
+    card.style.transform = 'translateX(0)';
+  });
+
+  // Focus first input
+  const firstInput = container.querySelector('input,textarea,select');
+  if (firstInput) setTimeout(() => firstInput.focus(), 300);
+}
+
+function renderField(f) {
+  const req = f.required ? '<span class="req">*</span>' : '';
+
+  if (f.type === 'textarea') {
+    return `<div class="field"><label class="field-label">${f.label}${req}</label><textarea class="q-textarea" id="field-${f.id}" placeholder="${esc(f.placeholder || '')}"></textarea></div>`;
+  }
+  if (f.type === 'radio') {
+    return `<div class="field" data-field="${f.id}"><label class="field-label">${f.label}${req}</label><div class="choices">${f.options.map(o => `<div class="choice" data-value="${esc(o)}" onclick="selectRadio(this,'${f.id}')"><div class="choice-dot"></div><span>${esc(o)}</span></div>`).join('')}</div></div>`;
+  }
+  if (f.type === 'checkbox') {
+    return `<div class="field" data-field="${f.id}"><label class="field-label">${f.label}${req}</label><div class="choices">${f.options.map(o => `<div class="choice" data-value="${esc(o)}" onclick="toggleCheck(this)"><div class="choice-box"></div><span>${esc(o)}</span></div>`).join('')}</div></div>`;
+  }
+  if (f.type === 'file') {
+    return `<div class="field" data-field="${f.id}">
+      <label class="field-label">${f.label}</label>
+      <div id="upload-zone-${f.id}" style="border:2px dashed rgba(147,50,255,0.25);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.25s;"
+           onclick="document.getElementById('file-${f.id}').click()"
+           ondragover="event.preventDefault();this.style.borderColor='var(--purple)';this.style.background='rgba(147,50,255,0.05)'"
+           ondragleave="this.style.borderColor='';this.style.background=''"
+           ondrop="event.preventDefault();this.style.borderColor='';this.style.background='';addFiles('${f.id}',event.dataTransfer.files)">
+        <input type="file" id="file-${f.id}" multiple accept="image/*,.pdf,.ai,.psd,.svg" onchange="addFiles('${f.id}',this.files)" style="display:none;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(147,50,255,0.7)" stroke-width="2" style="margin-bottom:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div style="font-size:13px;font-weight:600;color:var(--fg);margin-bottom:4px;">Déposer des fichiers ici</div>
+        <div style="font-size:11px;color:var(--fg-subtle);">Images, PDF, AI, PSD, SVG (50 Mo max par fichier)</div>
+      </div>
+      <div id="file-list-${f.id}" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;"></div>
+    </div>`;
+  }
+  return `<div class="field"><label class="field-label">${f.label}${req}</label><input type="${f.type}" class="q-input" id="field-${f.id}" placeholder="${esc(f.placeholder || '')}"></div>`;
+}
+
+function selectRadio(el, fieldId) {
+  el.closest('.choices').querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('selected');
+}
+
+// ── File uploads ──────────────────────────────────────────
+const uploadedFiles = {}; // { fieldId: [{name, size, file}] }
+
+function addFiles(fieldId, fileList) {
+  if (!uploadedFiles[fieldId]) uploadedFiles[fieldId] = [];
+  const maxSize = 50 * 1024 * 1024; // 50 Mo
+  Array.from(fileList).forEach(f => {
+    if (f.size > maxSize) { alert(`Le fichier "${f.name}" dépasse la taille maximale de 50 Mo.`); return; }
+    if (uploadedFiles[fieldId].some(x => x.name === f.name)) return; // skip dupes
+    uploadedFiles[fieldId].push({ name: f.name, size: f.size, file: f });
+  });
+  renderFileList(fieldId);
+}
+
+function removeFile(fieldId, idx) {
+  uploadedFiles[fieldId].splice(idx, 1);
+  renderFileList(fieldId);
+}
+
+function renderFileList(fieldId) {
+  const list = document.getElementById(`file-list-${fieldId}`);
+  if (!list) return;
+  const files = uploadedFiles[fieldId] || [];
+  if (!files.length) { list.innerHTML = ''; return; }
+  list.innerHTML = files.map((f, i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(147,50,255,0.06);border:1px solid rgba(147,50,255,0.15);border-radius:8px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(147,50,255,0.7)" stroke-width="2" style="flex-shrink:0;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+      <span style="flex:1;font-size:12px;font-weight:500;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(f.name)}</span>
+      <span style="font-size:10px;color:var(--fg-subtle);flex-shrink:0;">${(f.size / 1024).toFixed(0)} Ko</span>
+      <button onclick="removeFile('${fieldId}',${i})" style="background:none;border:none;cursor:pointer;color:var(--fg-subtle);padding:2px;" title="Retirer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+
+// ── Navigation ────────────────────────────────────────────
+function saveCurrentStep() {
+  const step = STEPS[currentStep];
+  step.fields.forEach(f => {
+    if (f.type === 'radio') {
+      const sel = document.querySelector(`[data-field="${f.id}"] .choice.selected`);
+      answers[f.id] = sel ? sel.dataset.value : '';
+    } else if (f.type === 'checkbox') {
+      const sels = document.querySelectorAll(`[data-field="${f.id}"] .choice.selected`);
+      answers[f.id] = Array.from(sels).map(s => s.dataset.value).join('||');
+    } else {
+      const input = document.getElementById(`field-${f.id}`);
+      answers[f.id] = input ? input.value.trim() : '';
+    }
+  });
+}
+
+function validateCurrentStep() {
+  const step = STEPS[currentStep];
+  for (const f of step.fields) {
+    if (!f.required) continue;
+    const val = answers[f.id];
+    if (!val) {
+      const el = document.querySelector(`[data-field="${f.id}"], #field-${f.id}`);
+      if (el) { el.classList.add('shake'); setTimeout(() => el.classList.remove('shake'), 500); }
+      return false;
+    }
+  }
+  return true;
+}
+
+function nextStep() {
+  saveCurrentStep();
+  if (!validateCurrentStep()) return;
+
+  if (currentStep < STEPS.length - 1) {
+    renderStep(currentStep + 1);
+  } else {
+    // Check RGPD consent on last step
+    const consentBox = document.getElementById('rgpd-consent');
+    const consentErr = document.getElementById('consent-error');
+    if (consentBox && !consentBox.checked) {
+      consentErr.style.display = 'block';
+      const field = document.getElementById('consent-field');
+      if (field) { field.classList.add('shake'); setTimeout(() => field.classList.remove('shake'), 500); }
+      return;
+    }
+    if (consentErr) consentErr.style.display = 'none';
+    answers.consent_at = new Date().toISOString();
+    submitForm();
+  }
+}
+
+function prevStep() {
+  saveCurrentStep();
+  if (currentStep > 0) renderStep(currentStep - 1);
+}
+
+// ── Submit ────────────────────────────────────────────────
+async function submitForm() {
+  const btn = document.getElementById('btn-next');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+
+  try {
+    // 1. Submit form data
+    const res = await fetch('/api/form-submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(answers)
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || 'Erreur serveur');
+
+    // 2. Upload files to Storage + register in deliverables table
+    const allFiles = Object.values(uploadedFiles).flat();
+    if (allFiles.length && result.project_id) {
+      btn.textContent = 'Upload des fichiers...';
+      const { createClient } = supabase;
+      const supa = createClient(
+        'https://nokrexfszurxxuspvbjd.supabase.co',
+        'sb_publishable_Bk0OoLi60NqpV-2hmUYGVw_FxKLXjHW'
+      );
+      for (const f of allFiles) {
+        try {
+          const sanitized = f.name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_.\-]/g,'');
+          const path = `${result.project_id}/brief-${Date.now()}-${sanitized}`;
+          // Upload fichier dans le Storage (anon key)
+          const { error: upErr } = await supa.storage.from('deliverables').upload(path, f.file, { upsert: true });
+          if (upErr) { console.log('Storage upload error:', upErr); continue; }
+          // Créer l'entrée deliverable via API (service key, bypass RLS)
+          await fetch('/api/upload-brief-file', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              project_id: result.project_id, folder: 'Brief',
+              file_name: f.name, file_size: f.size,
+              file_type: f.file.type, file_path: path
+            })
+          });
+        } catch(upErr) { console.log('Upload skip:', f.name, upErr.message); }
+      }
+    }
+
+    // 3. Show completion screen — adapt message for returning vs new clients
+    document.getElementById('done-email').textContent = answers.email || '';
+    document.getElementById('progress-fill').style.width = '100%';
+
+    // Update completion screen
+    document.getElementById('done-message').textContent = 'Merci ! Votre brief a bien été transmis à notre équipe.';
+    document.getElementById('done-hint').textContent = '';
+
+    // CTA button: direct to login (magic link sent by email)
+    document.getElementById('done-cta').href = `${window.location.origin}/login.html`;
+
+    document.getElementById('done-details').innerHTML = '';
+    switchScreen('done');
+    document.getElementById('step-counter').style.opacity = '0';
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = 'Envoyer le brief <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+    console.error('Form submit error:', e);
+    alert('Erreur lors de l\'envoi: ' + e.message);
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]); // strip data:...;base64,
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Init translations
+if (typeof translatePage === 'function') translatePage();
+
+// Spotlight
+document.getElementById('q-card')?.addEventListener('mousemove', e => {
+  const r = document.getElementById('q-card').getBoundingClientRect();
+  document.getElementById('q-card').style.setProperty('--mx', `${e.clientX - r.left}px`);
+  document.getElementById('q-card').style.setProperty('--my', `${e.clientY - r.top}px`);
+});
+</script>
+</body>
+</html>

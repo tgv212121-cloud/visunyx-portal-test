@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client - Visunyx Studio</title>
+  <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/style-base.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="../shared/i18n.js"></script>
+  <script src="../shared/supabase.js"></script>
+  <script src="../shared/components.js"></script>
+  <style>
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .info-field { display: flex; flex-direction: column; gap: 5px; }
+    .info-label { font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-subtle); }
+    .info-value { font-size: var(--text-sm); color: var(--fg); font-weight: 500; }
+    .info-value a { color: var(--purple); }
+    .editable-field { position: relative; }
+    .editable-field input, .editable-field textarea {
+      background: transparent; border: none; border-bottom: 1px solid transparent;
+      color: var(--fg); font-family: var(--font); font-size: var(--text-sm); font-weight: 500;
+      padding: 2px 0; width: 100%; outline: none; transition: border-color 0.2s;
+    }
+    .editable-field input:focus, .editable-field textarea:focus {
+      border-bottom-color: var(--purple);
+    }
+  </style>
+</head>
+<body>
+<div class="vx-bg"><div class="vx-orb vx-orb-1"></div><div class="vx-orb vx-orb-2"></div><div class="vx-orb vx-orb-3"></div></div>
+<div class="vx-grid"></div>
+<svg class="vx-noise" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+
+<div class="app-layout">
+  <div id="sidebar-container"></div>
+
+  <div class="main-content">
+    <div id="topbar-container"></div>
+
+    <div class="page-content">
+
+      <!-- Client info card -->
+      <div class="glass-card" style="padding:28px;margin-bottom:24px;" id="client-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div class="avatar" id="client-avatar" style="width:52px;height:52px;font-size:18px;border-radius:14px;"></div>
+            <div>
+              <div style="font-size:var(--text-2xl);font-weight:800;color:var(--fg);" id="client-company">Chargement…</div>
+              <div style="font-size:var(--text-sm);color:var(--fg-muted);margin-top:2px;" id="client-contact"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="toggleEdit()" id="btn-edit">
+              <i data-lucide="edit-2" style="width:13px;height:13px;"></i> <span data-i18n="btn.edit">Modifier</span>
+            </button>
+            <button class="btn btn-primary btn-sm" id="btn-save" style="display:none;" onclick="saveClient()">
+              <i data-lucide="check" style="width:13px;height:13px;"></i> <span data-i18n="btn.save">Enregistrer</span>
+            </button>
+            <button class="btn btn-ghost btn-sm" id="btn-invite" onclick="inviteClient()">
+              <i data-lucide="user-plus" style="width:13px;height:13px;"></i> <span data-i18n="admin.client.invite">Inviter au portail</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="info-grid" id="info-grid">
+          <!-- Filled by JS -->
+        </div>
+        <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--glass-border);">
+          <div class="info-label" style="margin-bottom:8px;" data-i18n="admin.client.notes">Notes internes</div>
+          <div id="field-notes" style="font-size:var(--text-sm);color:var(--fg-muted);line-height:1.7;"></div>
+          <textarea class="vx-textarea" id="edit-notes" style="display:none;min-height:100px;" data-i18n="admin.client.notes.placeholder" placeholder="Notes internes sur ce client…"></textarea>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="section-header">
+        <div>
+          <div class="section-title" data-i18n="admin.tab.projects">Projets</div>
+          <div class="section-subtitle" id="projects-count"></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openModal('modal-project')">
+          <i data-lucide="plus" style="width:14px;height:14px;"></i> <span data-i18n="admin.client.newproject">Nouveau projet</span>
+        </button>
+      </div>
+
+      <div id="projects-grid" class="cards-grid">
+        <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal: New Project -->
+<div class="modal-overlay" id="modal-project" style="display:none;">
+  <div class="glass-card modal">
+    <div class="modal-header">
+      <div class="modal-title" data-i18n="admin.client.newproject">Nouveau projet</div>
+      <button class="btn btn-ghost btn-icon" onclick="closeModal('modal-project')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+    </div>
+    <form onsubmit="submitNewProject(event)">
+      <div class="field-group">
+        <label class="field-label">Titre du projet</label>
+        <input type="text" class="vx-input" id="np-title" placeholder="ex: Identité visuelle complète" required>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-group">
+          <label class="field-label">Type</label>
+          <select class="vx-select" id="np-type">
+            <option value="branding">Branding</option>
+            <option value="logo">Logo</option>
+            <option value="brandbook">Brandbook</option>
+            <option value="social-media">Social Media</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Priorité</label>
+          <select class="vx-select" id="np-priority">
+            <option value="normale">Normale</option>
+            <option value="haute">Haute</option>
+            <option value="urgente">Urgente</option>
+            <option value="basse">Basse</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-group">
+          <label class="field-label">Échéance</label>
+          <input type="date" class="vx-input" id="np-due-date">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Prix (€)</label>
+          <input type="number" class="vx-input" id="np-price" placeholder="149" min="0" step="0.01">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modal-project')" data-i18n="btn.cancel">Annuler</button>
+        <button type="submit" class="btn btn-primary">
+          <i data-lucide="plus" style="width:14px;height:14px;"></i> Créer le projet
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script>
+let clientId   = null;
+let clientData = null;
+let isEditing  = false;
+
+const FIELDS = [
+  { key: 'contact_email', label: () => t('th.email'),     type: 'email' },
+  { key: 'phone',         label: () => t('account.phone'),type: 'tel'   },
+  { key: 'website',       label: () => 'Website',         type: 'url'   },
+  { key: 'industry',      label: () => t('th.sector'),    type: 'text'  },
+];
+
+async function init() {
+  const auth = await requireAuth(['developer', 'admin']);
+  if (!auth) return;
+
+  clientId = getParam('id');
+  if (!clientId) { window.location.href = 'index.html'; return; }
+
+  document.getElementById('sidebar-container').innerHTML = renderSidebar('clients');
+  document.getElementById('topbar-container').innerHTML  = renderTopbar(
+    t('admin.client.page'),
+    '',
+    `<a href="index.html" class="btn btn-ghost btn-sm">
+       <i data-lucide="arrow-left" style="width:13px;height:13px;"></i> <span data-i18n="btn.back">Retour</span>
+     </a>`
+  );
+  await setupSidebarUser();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+
+  await loadClient();
+  translatePage();
+}
+
+async function loadClient() {
+  try {
+    clientData = await API.getClient(clientId);
+    renderClientInfo();
+    renderProjects(clientData.projects || []);
+    initSpotlight();
+    initMagnetic('[data-magnetic]');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  } catch(e) {
+    showToast(t('account.error'), 'error');
+  }
+}
+
+function renderClientInfo() {
+  const c = clientData;
+  document.getElementById('client-company').textContent = c.company_name;
+  document.getElementById('client-contact').textContent = c.contact_name || '';
+  document.getElementById('client-avatar').textContent  = initials(c.company_name);
+
+  const grid = document.getElementById('info-grid');
+  grid.innerHTML = FIELDS.map(f => `
+    <div class="info-field editable-field" id="wrap-${f.key}">
+      <div class="info-label">${typeof f.label === 'function' ? f.label() : f.label}</div>
+      <div class="info-value" id="view-${f.key}">
+        ${f.key === 'website' && c[f.key]
+          ? `<a href="${escHtml(c[f.key])}" target="_blank">${escHtml(c[f.key])}</a>`
+          : escHtml(c[f.key] || '-')}
+      </div>
+      <input type="${f.type}" id="edit-${f.key}" value="${escHtml(c[f.key] || '')}"
+             style="display:none;" class="vx-input" placeholder="${typeof f.label === 'function' ? f.label() : f.label}">
+    </div>
+  `).join('');
+
+  const notes = document.getElementById('field-notes');
+  notes.innerHTML = c.notes
+    ? escHtml(c.notes).replace(/\n/g, '<br>')
+    : `<span style="color:var(--fg-subtle);">${t('admin.client.notes.none')}</span>`;
+
+  document.getElementById('projects-count').textContent =
+    `${(clientData.projects || []).length} projet(s)`;
+}
+
+function toggleEdit() {
+  isEditing = !isEditing;
+  FIELDS.forEach(f => {
+    document.getElementById(`view-${f.key}`)?.style.setProperty('display', isEditing ? 'none' : '');
+    document.getElementById(`edit-${f.key}`)?.style.setProperty('display', isEditing ? '' : 'none');
+  });
+  document.getElementById('field-notes').style.display = isEditing ? 'none' : '';
+  document.getElementById('edit-notes').style.display = isEditing ? '' : 'none';
+  if (isEditing) document.getElementById('edit-notes').value = clientData.notes || '';
+  document.getElementById('btn-edit').style.display = isEditing ? 'none' : '';
+  document.getElementById('btn-save').style.display = isEditing ? '' : 'none';
+}
+
+async function saveClient() {
+  const payload = {};
+  FIELDS.forEach(f => {
+    const val = document.getElementById(`edit-${f.key}`)?.value.trim();
+    payload[f.key] = val || null;
+  });
+  payload.notes = document.getElementById('edit-notes').value.trim() || null;
+  try {
+    clientData = await API.updateClient(clientId, payload);
+    showToast(t('account.saved'), 'success');
+    toggleEdit();
+    renderClientInfo();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  } catch(e) {
+    showToast(t('account.error'), 'error');
+  }
+}
+
+async function inviteClient() {
+  const btn = document.getElementById('btn-invite');
+  if (!clientData.contact_email) {
+    showToast(t('account.error'), 'error');
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = t('brief.sending');
+  try {
+    await API.inviteClient(clientData.contact_email, clientData.contact_name, clientData.company_name);
+    const user = await getUser();
+    await API.logActivity({
+      client_id: clientId, user_id: user.id,
+      action: 'client_invited',
+      details: { email: clientData.contact_email }
+    });
+    showToast(`Invitation envoyée à ${clientData.contact_email}`, 'success');
+  } catch(e) {
+    showToast(t('account.error'), 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i data-lucide="user-plus" style="width:13px;height:13px;"></i> ${t('admin.client.invite')}`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+function renderProjects(projects) {
+  const grid = document.getElementById('projects-grid');
+  if (!projects.length) {
+    grid.innerHTML = renderEmptyState('briefcase', t('empty.projects'), t('client.noproject.hint'), `<button class="btn btn-primary btn-sm" onclick="openModal('modal-project')"><i data-lucide="plus" style="width:14px;height:14px;"></i> ${t('btn.create')}</button>`);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+  grid.innerHTML = projects.map(p => renderProjectCard({ ...p, clients: clientData }, 'project.html')).join('');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+async function submitNewProject(e) {
+  e.preventDefault();
+  try {
+    const project = await API.createProject({
+      client_id:    clientId,
+      title:        document.getElementById('np-title').value.trim(),
+      project_type: document.getElementById('np-type').value,
+      priority:     document.getElementById('np-priority').value,
+      due_date:     document.getElementById('np-due-date').value   || null,
+      total_price:  parseFloat(document.getElementById('np-price').value) || null,
+      order_date:   new Date().toISOString().split('T')[0],
+      status:       'nouveau'
+    });
+    const user = await getUser();
+    await API.logActivity({
+      project_id: project.id, client_id: clientId, user_id: user.id,
+      action: 'project_created', details: { title: project.title }
+    });
+    showToast(t('activity.project_created'), 'success');
+    closeModal('modal-project');
+    await loadClient();
+  } catch(err) {
+    showToast(t('account.error'), 'error');
+  }
+}
+
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) closeModal(e.target.id);
+});
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

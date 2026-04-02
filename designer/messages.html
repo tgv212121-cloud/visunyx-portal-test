@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - Visunyx Designer</title>
+  <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/style-base.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="../shared/i18n.js"></script>
+  <script src="../shared/supabase.js"></script>
+  <script src="../shared/components.js"></script>
+</head>
+<body>
+<div class="vx-bg"><div class="vx-orb vx-orb-1"></div><div class="vx-orb vx-orb-2"></div><div class="vx-orb vx-orb-3"></div></div>
+<div class="vx-grid"></div>
+<svg class="vx-noise" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+
+<div class="app-layout">
+  <div id="sidebar-container"></div>
+  <div class="main-content">
+    <div id="topbar-container"></div>
+    <div class="page-content">
+
+      <div class="section-header" style="margin-bottom:20px;">
+        <div class="section-title" data-i18n="designer.messages">Messages</div>
+        <div style="font-size:var(--text-xs);color:var(--fg-muted);" id="conversations-count"></div>
+      </div>
+
+      <!-- Search -->
+      <div class="search-bar">
+        <i data-lucide="search" class="search-icon" style="width:14px;height:14px;"></i>
+        <input type="text" id="search-input" data-i18n="designer.search" placeholder="Rechercher un projet ou client..." oninput="filterConversations()">
+      </div>
+
+      <div id="conversations-list" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script>
+let _allConversations = [];
+
+async function init() {
+  const auth = await requireAuth(['designer']);
+  if (!auth) return;
+  const { user, profile } = auth;
+
+  document.getElementById('sidebar-container').innerHTML = renderSidebar('messages', 0, 'designer');
+  document.getElementById('topbar-container').innerHTML = renderTopbar(t('designer.messages'), t('designer.messages.subtitle'));
+  await setupSidebarUser();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+
+  // Get designer's projects
+  const projects = await API.getMyDesignerProjects(user.id);
+
+  if (!projects || !projects.length) {
+    document.getElementById('conversations-list').innerHTML = renderEmptyState(
+      'inbox', t('designer.noproject'),
+      t('designer.messages.noproject.hint')
+    );
+    document.getElementById('conversations-count').textContent = '';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+
+  // For each project, get latest message + unread count
+  const conversations = [];
+  for (const p of projects) {
+    const { data: msgs } = await db.from('messages')
+      .select('*, profiles(full_name, role)')
+      .eq('project_id', p.id)
+      .eq('is_internal', true)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    const { count: unread } = await db.from('messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('project_id', p.id)
+      .eq('is_internal', true)
+      .eq('is_read', false)
+      .neq('sender_id', user.id);
+
+    conversations.push({
+      project: p,
+      lastMessage: msgs?.[0] || null,
+      unread: unread || 0
+    });
+  }
+
+  // Sort by latest message (unread first, then by time)
+  conversations.sort((a, b) => {
+    if (a.unread > 0 && b.unread === 0) return -1;
+    if (a.unread === 0 && b.unread > 0) return 1;
+    const ta = a.lastMessage?.created_at || '0';
+    const tb = b.lastMessage?.created_at || '0';
+    return tb.localeCompare(ta);
+  });
+
+  _allConversations = conversations;
+  const totalUnread = conversations.reduce((s, c) => s + c.unread, 0);
+  document.getElementById('conversations-count').textContent =
+    `${conversations.length} ${t('designer.messages.conversation')}${totalUnread > 0 ? ` · ${totalUnread} ${t('designer.messages.unread')}` : ''}`;
+
+  renderConversations(conversations);
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+  translatePage();
+}
+
+function filterConversations() {
+  const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+  if (!q) {
+    renderConversations(_allConversations);
+  } else {
+    const filtered = _allConversations.filter(c => {
+      const p = c.project;
+      return p.title.toLowerCase().includes(q);
+    });
+    renderConversations(filtered);
+  }
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function renderConversations(conversations) {
+  const container = document.getElementById('conversations-list');
+
+  if (!conversations.length) {
+    const q = document.getElementById('search-input')?.value;
+    container.innerHTML = renderEmptyState(
+      q ? 'search' : 'message-circle',
+      q ? t('designer.messages.noresult') : t('designer.messages.empty'),
+      q ? t('designer.messages.noresult.hint') : t('designer.messages.empty.hint')
+    );
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+
+  container.innerHTML = conversations.map(c => {
+    const p = c.project;
+    const msg = c.lastMessage;
+    const preview = msg ? (msg.content || '').substring(0, 80) + (msg.content?.length > 80 ? '...' : '') : t('chat.empty');
+    const sender = msg?.profiles?.full_name || '';
+    const time = msg ? timeAgo(msg.created_at) : '';
+    const hasAttach = msg?.attachment_path ? ' · 📎' : '';
+
+    return `
+    <a href="./project.html?id=${p.id}#messages" class="conversation-item" style="display:flex;gap:16px;padding:20px;background:var(--glass);border:1px solid ${c.unread > 0 ? 'rgba(147,50,255,0.35)' : 'var(--glass-border)'};border-radius:14px;text-decoration:none;color:inherit;transition:all 0.2s;${c.unread > 0 ? 'background:rgba(147,50,255,0.04);' : ''}" onmouseover="this.style.borderColor='rgba(147,50,255,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='${c.unread > 0 ? 'rgba(147,50,255,0.35)' : 'var(--glass-border)'}';this.style.transform=''">
+      <div class="avatar" style="width:44px;height:44px;font-size:14px;border-radius:12px;flex-shrink:0;">${initials(p.title)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;">
+          <div style="font-size:var(--text-sm);font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(p.title)}</div>
+          <div class="time-relative">${time}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          ${renderStatusBadge(p.status)}
+        </div>
+        <div style="font-size:var(--text-xs);color:${c.unread > 0 ? 'var(--fg)' : 'var(--fg-subtle)'};${c.unread > 0 ? 'font-weight:600;' : ''}white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+          ${sender ? `<strong>${escHtml(sender)}</strong> : ` : ''}${escHtml(preview)}${hasAttach}
+        </div>
+      </div>
+      ${c.unread > 0 ? `<div style="min-width:22px;height:22px;background:var(--purple);color:#fff;font-size:10px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;align-self:center;">${c.unread}</div>` : ''}
+    </a>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
