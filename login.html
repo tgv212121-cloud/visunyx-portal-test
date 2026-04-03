@@ -7,7 +7,7 @@
   <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
@@ -15,35 +15,23 @@
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --purple: #9332FF; --purple-dark: #1A006C; --purple-mid: #5B1FA8;
-      --accent: #4D65FF; --bg: #0B0B1A; --fg: #F0EEFF;
-      --fg-muted: rgba(240,238,255,0.55); --fg-subtle: rgba(240,238,255,0.28);
-      --glass: rgba(147,50,255,0.07); --glass-b: rgba(147,50,255,0.18);
-      --glass-bh: rgba(147,50,255,0.35); --input-bg: rgba(255,255,255,0.04);
-      --ease: cubic-bezier(0.22,1,0.36,1); --font: 'Montserrat', sans-serif;
-      --r: 16px;
+      --purple: #E8590C; --purple-dark: #9A3412; --purple-mid: #C2410C;
+      --accent: #E8590C; --bg: #0e0e10; --fg: #e8e8e8;
+      --fg-muted: #737373; --fg-subtle: #3a3a3a;
+      --glass: #1a1a1c; --glass-b: rgba(255,255,255,0.06);
+      --glass-bh: rgba(255,255,255,0.10); --input-bg: rgba(255,255,255,0.03);
+      --ease: cubic-bezier(0.16,1,0.3,1);
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --r: 6px;
     }
     html, body {
       height: 100%; font-family: var(--font); background: var(--bg); color: var(--fg);
       overflow: hidden; -webkit-font-smoothing: antialiased;
     }
 
-    /* Background */
-    .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-    .orb { position: absolute; border-radius: 50%; filter: blur(120px); animation: drift linear infinite; }
-    .orb-1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(147,50,255,0.18) 0%, transparent 70%); top: -280px; left: -180px; animation-duration: 28s; }
-    .orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(77,101,255,0.12) 0%, transparent 70%); bottom: -160px; right: -100px; animation-duration: 34s; animation-direction: reverse; }
-    .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(147,50,255,0.08) 0%, transparent 70%); top: 50%; left: 60%; transform: translate(-50%,-50%); animation-duration: 42s; }
-    @keyframes drift {
-      0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(28px,-18px) scale(1.05)}
-      50%{transform:translate(-16px,26px) scale(0.96)} 75%{transform:translate(18px,12px) scale(1.03)}
-    }
-    .grid { position: fixed; inset: 0; z-index: 1; pointer-events: none;
-      background-image: linear-gradient(rgba(147,50,255,0.04) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(147,50,255,0.04) 1px,transparent 1px);
-      background-size: 52px 52px; }
-    .noise { position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: .032; width: 100%; height: 100%; }
-    @media (prefers-reduced-motion: reduce) { .orb { animation: none !important; } }
+    /* Background — clean, no orbs */
+    .bg, .grid, .noise { display: none; }
+    .orb, .orb-1, .orb-2, .orb-3 { display: none; }
 
     /* Layout */
     .app {
@@ -52,111 +40,95 @@
       padding: 20px;
     }
 
-    /* Card */
+    /* Card — solid, no glassmorphism */
     .card {
-      width: 100%; max-width: 420px;
+      width: 100%; max-width: 400px;
       background: var(--glass);
-      backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
       border: 1px solid var(--glass-b); border-radius: var(--r);
-      padding: 40px 38px;
-      position: relative; overflow: hidden;
-      box-shadow: 0 0 0 1px rgba(147,50,255,0.06), 0 40px 100px rgba(0,0,0,0.7);
+      padding: 32px 28px;
+      position: relative;
     }
-    .card::before {
-      content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg,transparent,rgba(147,50,255,0.5),transparent);
-    }
+    .card::before { display: none; }
 
     /* Logo */
-    .logo-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
-    .logo-wrap img { height: 36px; width: auto; }
+    .logo-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+    .logo-wrap img { height: 32px; width: auto; }
 
     /* Headline */
     .headline {
-      text-align: center; margin-bottom: 28px;
+      text-align: center; margin-bottom: 22px;
     }
     .headline h1 {
-      font-size: 22px; font-weight: 700; color: var(--fg);
-      margin-bottom: 6px; letter-spacing: -0.01em;
+      font-size: 18px; font-weight: 600; color: var(--fg);
+      margin-bottom: 4px; letter-spacing: -0.02em;
     }
-    .headline p { font-size: 13px; color: var(--fg-muted); line-height: 1.6; font-weight: 400; }
+    .headline p { font-size: 13px; color: var(--fg-muted); line-height: 1.5; font-weight: 400; }
 
-    /* Tabs */
+    /* Tabs — underline style, not pill */
     .tabs {
-      display: flex; gap: 4px; padding: 4px;
-      background: rgba(147,50,255,0.06);
-      border: 1px solid var(--glass-b); border-radius: 10px;
-      margin-bottom: 24px;
+      display: flex; gap: 0; border-bottom: 1px solid var(--glass-b);
+      margin-bottom: 18px;
     }
     .tab-btn {
-      flex: 1; padding: 9px 16px; border: none; background: none;
-      font-family: var(--font); font-size: 12px; font-weight: 600;
-      color: var(--fg-muted); cursor: pointer; border-radius: 7px;
-      transition: all 0.2s var(--ease);
+      flex: 1; padding: 8px 14px; border: none; background: none;
+      font-family: var(--font); font-size: 12px; font-weight: 500;
+      color: var(--fg-muted); cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color 0.12s var(--ease), border-color 0.12s var(--ease);
     }
-    .tab-btn.active { background: var(--purple); color: #fff; box-shadow: 0 2px 12px rgba(147,50,255,0.4); }
+    .tab-btn.active { color: var(--fg); border-bottom-color: var(--purple); }
 
     /* Form */
-    .form-group { margin-bottom: 16px; }
+    .form-group { margin-bottom: 14px; }
     .form-label {
-      display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--fg-muted); margin-bottom: 8px;
+      display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.03em;
+      text-transform: uppercase; color: var(--fg-muted); margin-bottom: 6px;
     }
     .form-input {
       width: 100%; background: var(--input-bg);
-      border: 1px solid var(--glass-b); border-radius: 10px;
-      padding: 12px 14px; color: var(--fg); font-family: var(--font);
+      border: 1px solid var(--glass-b); border-radius: 3px;
+      padding: 9px 12px; color: var(--fg); font-family: var(--font);
       font-size: 14px; font-weight: 400; outline: none;
-      transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s;
+      transition: border-color 0.12s var(--ease);
     }
     .form-input::placeholder { color: var(--fg-subtle); }
     .form-input:focus {
-      border-color: rgba(147,50,255,0.5);
-      background: rgba(147,50,255,0.06);
-      box-shadow: 0 0 0 3px rgba(147,50,255,0.12);
+      border-color: rgba(232,89,12,0.5);
     }
 
-    /* Btn */
+    /* Btn — solid, no gradient */
     .btn-submit {
-      width: 100%; padding: 13px 24px;
-      background: linear-gradient(135deg, var(--purple), var(--accent));
-      background-size: 200% 100%; background-position: 0% 0%;
-      color: #fff; border: none; border-radius: 10px;
-      font-family: var(--font); font-size: 14px; font-weight: 700;
-      letter-spacing: 0.02em; cursor: pointer;
-      box-shadow: 0 4px 24px rgba(147,50,255,0.4);
-      transition: all 0.25s var(--ease);
+      width: 100%; padding: 10px 24px;
+      background: var(--purple);
+      color: #fff; border: none; border-radius: 3px;
+      font-family: var(--font); font-size: 14px; font-weight: 600;
+      letter-spacing: -0.01em; cursor: pointer;
+      transition: background 0.12s var(--ease);
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      position: relative; overflow: hidden;
     }
-    .btn-submit:hover {
-      background-position: 100% 0%;
-      box-shadow: 0 6px 32px rgba(147,50,255,0.55);
-      transform: translateY(-1px);
-    }
-    .btn-submit:active { transform: translateY(0); }
-    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-submit:hover { background: #F97316; }
+    .btn-submit:active { opacity: 0.9; }
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 
     .btn-google {
       width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
-      padding: 12px 20px; background: #fff; color: #333; font-family: var(--font);
-      font-size: 14px; font-weight: 600; border: none; border-radius: 10px;
-      cursor: pointer; transition: all 0.25s var(--ease);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      padding: 9px 20px; background: rgba(255,255,255,0.06); color: var(--fg);
+      font-family: var(--font); font-size: 13px; font-weight: 500;
+      border: 1px solid var(--glass-b); border-radius: 3px;
+      cursor: pointer; transition: background 0.12s var(--ease), border-color 0.12s var(--ease);
     }
-    .btn-google:hover { background: #f5f5f5; box-shadow: 0 4px 20px rgba(0,0,0,0.2); transform: translateY(-1px); }
-    .btn-google:active { transform: translateY(0); }
+    .btn-google:hover { background: rgba(255,255,255,0.08); border-color: var(--glass-bh); }
 
     .separator {
-      display: flex; align-items: center; gap: 14px; margin: 20px 0;
+      display: flex; align-items: center; gap: 14px; margin: 16px 0;
     }
     .separator::before, .separator::after {
-      content: ''; flex: 1; height: 1px; background: rgba(147,50,255,0.15);
+      content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.05);
     }
-    .separator span { font-size: 11px; font-weight: 600; color: var(--fg-subtle); text-transform: uppercase; letter-spacing: 0.1em; }
+    .separator span { font-size: 10px; font-weight: 500; color: var(--fg-subtle); text-transform: uppercase; letter-spacing: 0.08em; }
 
     .btn-spinner {
-      width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+      width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
       border-top-color: #fff; border-radius: 50%;
       animation: spin 0.7s linear infinite; display: none;
     }
@@ -165,44 +137,39 @@
     /* Error */
     .error-msg {
       display: none; align-items: center; gap: 8px;
-      padding: 11px 14px; margin-bottom: 16px;
-      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25);
-      border-radius: 10px; font-size: 13px; color: #F87171;
+      padding: 9px 12px; margin-bottom: 12px;
+      background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.12);
+      border-radius: 3px; font-size: 13px; color: #F87171;
       animation: shake 0.3s var(--ease);
     }
     @keyframes shake {
-      0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)}
     }
 
     /* Success */
     .success-msg {
       display: none; flex-direction: column; align-items: center;
-      text-align: center; gap: 12px; padding: 8px 0;
+      text-align: center; gap: 10px; padding: 8px 0;
     }
     .success-icon {
-      width: 52px; height: 52px; border-radius: 50%;
-      background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15);
       display: flex; align-items: center; justify-content: center;
-      color: #34D399; font-size: 22px;
+      color: #34D399; font-size: 18px;
     }
-    .success-title { font-size: 16px; font-weight: 700; color: var(--fg); }
-    .success-sub { font-size: 13px; color: var(--fg-muted); line-height: 1.6; }
+    .success-title { font-size: 15px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; }
+    .success-sub { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
 
     /* Footer */
     .card-footer {
-      margin-top: 20px; text-align: center;
+      margin-top: 16px; text-align: center;
       font-size: 11px; color: var(--fg-subtle);
     }
 
-    /* Fade-in on load */
-    .card { animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
-    .logo-wrap { animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
-    .headline  { animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.3s both; }
-    .tabs      { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.38s both; }
-    #form-password { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.44s both; }
-    #form-magic    { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.44s both; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
+    /* Single entrance animation — the card only */
+    .card { animation: cardIn 0.6s var(--ease) 0.05s both; }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
     }
   </style>

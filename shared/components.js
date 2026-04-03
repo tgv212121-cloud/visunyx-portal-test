@@ -80,7 +80,7 @@ function renderAccountPanel() {
       <!-- Avatar -->
       <div style="text-align:center;margin-bottom:28px;">
         <div id="account-avatar-wrap" style="position:relative;display:inline-block;cursor:pointer;" onclick="document.getElementById('avatar-input').click()">
-          <div class="avatar" id="account-avatar" style="width:80px;height:80px;font-size:28px;border:3px solid rgba(147,50,255,0.3);"></div>
+          <div class="avatar" id="account-avatar" style="width:80px;height:80px;font-size:28px;border:3px solid rgba(232,89,12,0.3);"></div>
           <div style="position:absolute;bottom:0;right:0;width:28px;height:28px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);">
             <i data-lucide="camera" style="width:12px;height:12px;color:#fff;"></i>
           </div>
@@ -270,8 +270,8 @@ function renderTopbar(title, subtitle = '', actions = '') {
           <i data-lucide="bell" style="width:16px;height:16px;"></i>
           <span id="notif-count" style="display:none;position:absolute;top:2px;right:2px;min-width:16px;height:16px;background:var(--purple);color:#fff;font-size:9px;font-weight:700;border-radius:50%;align-items:center;justify-content:center;line-height:1;"></span>
         </button>
-        <div id="notif-panel" style="display:none;position:absolute;top:calc(100% + 8px);right:0;width:360px;max-height:420px;overflow-y:auto;background:#1e1740;border:1px solid rgba(147,50,255,0.4);border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,0.6),0 0 40px rgba(147,50,255,0.1);z-index:200;">
-          <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(147,50,255,0.15);display:flex;align-items:center;justify-content:space-between;">
+        <div id="notif-panel" style="display:none;position:absolute;top:calc(100% + 8px);right:0;width:360px;max-height:420px;overflow-y:auto;background:#1a1a1c;border:1px solid rgba(232,89,12,0.4);border-radius:6px;box-shadow:0 16px 48px rgba(0,0,0,0.6),0 0 40px rgba(232,89,12,0.1);z-index:200;">
+          <div style="padding:16px 18px 12px;border-bottom:1px solid rgba(232,89,12,0.15);display:flex;align-items:center;justify-content:space-between;">
             <span style="font-size:var(--text-sm);font-weight:700;color:var(--fg);">${t('notif.title')}</span>
             <span id="notif-panel-count" style="font-size:var(--text-xs);color:var(--fg-muted);"></span>
           </div>
@@ -368,8 +368,8 @@ async function loadNotifications() {
     document.getElementById('notif-panel-count').textContent = msgCount > 0 ? `${msgCount} ${msgCount > 1 ? t('notif.unread.msg') : t('notif.unread.msg.one')}` : `${items.length} ${t('notif.recent')}`;
 
     list.innerHTML = items.slice(0, 20).map(item => `
-      <a href="${item.href}" style="display:flex;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:inherit;transition:background 0.15s;${item.isNew ? 'background:rgba(147,50,255,0.06);' : ''}" onmouseover="this.style.background='rgba(147,50,255,0.12)'" onmouseout="this.style.background='${item.isNew ? 'rgba(147,50,255,0.06)' : ''}'">
-        <div style="width:32px;height:32px;border-radius:8px;background:${item.isNew ? 'rgba(147,50,255,0.2)' : 'rgba(147,50,255,0.1)'};border:1px solid rgba(147,50,255,${item.isNew ? '0.4' : '0.2'});display:flex;align-items:center;justify-content:center;color:var(--purple);flex-shrink:0;">
+      <a href="${item.href}" style="display:flex;gap:10px;padding:10px 12px;border-radius:3px;text-decoration:none;color:inherit;transition:background 0.15s;${item.isNew ? 'background:rgba(232,89,12,0.06);' : ''}" onmouseover="this.style.background='rgba(232,89,12,0.12)'" onmouseout="this.style.background='${item.isNew ? 'rgba(232,89,12,0.06)' : ''}'">
+        <div style="width:32px;height:32px;border-radius:8px;background:${item.isNew ? 'rgba(232,89,12,0.2)' : 'rgba(232,89,12,0.1)'};border:1px solid rgba(232,89,12,${item.isNew ? '0.4' : '0.2'});display:flex;align-items:center;justify-content:center;color:var(--purple);flex-shrink:0;">
           <i data-lucide="${item.icon}" style="width:14px;height:14px;"></i>
         </div>
         <div style="flex:1;min-width:0;">
@@ -644,9 +644,9 @@ function confirmAction(title, message, onConfirm) {
   overlay.id = 'confirm-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;animation:confirmFadeIn 0.2s ease;';
   overlay.innerHTML = `
-    <div style="width:100%;max-width:400px;background:#1e1740;border:1px solid rgba(239,68,68,0.3);border-radius:16px;padding:32px;box-shadow:0 25px 60px rgba(0,0,0,0.7),0 0 40px rgba(239,68,68,0.08);animation:confirmSlideIn 0.25s cubic-bezier(0.22,1,0.36,1);">
+    <div style="width:100%;max-width:400px;background:#1a1a1c;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:32px;box-shadow:0 25px 60px rgba(0,0,0,0.7),0 0 40px rgba(239,68,68,0.08);animation:confirmSlideIn 0.25s cubic-bezier(0.22,1,0.36,1);">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <div style="width:44px;height:44px;border-radius:6px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
         </div>
         <div>
@@ -655,8 +655,8 @@ function confirmAction(title, message, onConfirm) {
         </div>
       </div>
       <div style="display:flex;gap:10px;justify-content:flex-end;">
-        <button id="confirm-cancel" style="padding:10px 20px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(147,50,255,0.2);color:var(--fg-muted);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;">${t('confirm.cancel')}</button>
-        <button id="confirm-ok" style="padding:10px 20px;border-radius:10px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);color:#F87171;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;">${t('confirm.delete')}</button>
+        <button id="confirm-cancel" style="padding:10px 20px;border-radius:3px;background:rgba(255,255,255,0.05);border:1px solid rgba(232,89,12,0.2);color:var(--fg-muted);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;">${t('confirm.cancel')}</button>
+        <button id="confirm-ok" style="padding:10px 20px;border-radius:3px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);color:#F87171;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;">${t('confirm.delete')}</button>
       </div>
     </div>`;
 
@@ -706,9 +706,9 @@ function promptInput(title, placeholder = '', defaultValue = '', icon = 'folder-
     overlay.id = 'prompt-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;animation:confirmFadeIn 0.2s ease;';
     overlay.innerHTML = `
-    <div style="width:100%;max-width:420px;background:linear-gradient(180deg,#1e1740 0%,#150f30 100%);border:1px solid rgba(147,50,255,0.3);border-radius:18px;padding:32px;box-shadow:0 25px 60px rgba(0,0,0,0.7),0 0 60px rgba(147,50,255,0.08);animation:confirmSlideIn 0.3s cubic-bezier(0.22,1,0.36,1);">
+    <div style="width:100%;max-width:420px;background:linear-gradient(180deg,#1a1a1c 0%,#1a1a1c 100%);border:1px solid rgba(232,89,12,0.3);border-radius:6px;padding:32px;box-shadow:0 25px 60px rgba(0,0,0,0.7),0 0 60px rgba(232,89,12,0.08);animation:confirmSlideIn 0.3s cubic-bezier(0.22,1,0.36,1);">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(147,50,255,0.15),rgba(77,101,255,0.1));border:1px solid rgba(147,50,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <div style="width:44px;height:44px;border-radius:6px;background:linear-gradient(135deg,rgba(232,89,12,0.15),rgba(232,89,12,0.1));border:1px solid rgba(232,89,12,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <i data-lucide="${icon}" style="width:20px;height:20px;color:var(--purple);"></i>
         </div>
         <div style="font-size:17px;font-weight:700;color:var(--fg);">${title}</div>
@@ -917,8 +917,8 @@ async function setupSidebarUser() {
     const empty = list.querySelector('[style*="text-align:center"]');
     if (empty && empty.textContent.includes('Aucune')) empty.remove();
     const html = `
-    <a href="${href}" style="display:flex;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:inherit;transition:background 0.15s;background:rgba(147,50,255,0.06);" onmouseover="this.style.background='rgba(147,50,255,0.12)'" onmouseout="this.style.background='rgba(147,50,255,0.06)'">
-      <div style="width:32px;height:32px;border-radius:8px;background:rgba(147,50,255,0.15);border:1px solid rgba(147,50,255,0.3);display:flex;align-items:center;justify-content:center;color:var(--purple);flex-shrink:0;">
+    <a href="${href}" style="display:flex;gap:10px;padding:10px 12px;border-radius:3px;text-decoration:none;color:inherit;transition:background 0.15s;background:rgba(232,89,12,0.06);" onmouseover="this.style.background='rgba(232,89,12,0.12)'" onmouseout="this.style.background='rgba(232,89,12,0.06)'">
+      <div style="width:32px;height:32px;border-radius:8px;background:rgba(232,89,12,0.15);border:1px solid rgba(232,89,12,0.3);display:flex;align-items:center;justify-content:center;color:var(--purple);flex-shrink:0;">
         <i data-lucide="${icon}" style="width:14px;height:14px;"></i>
       </div>
       <div style="flex:1;min-width:0;">

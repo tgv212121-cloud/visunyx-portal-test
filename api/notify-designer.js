@@ -84,9 +84,9 @@ module.exports = async (req, res) => {
             from: 'Visunyx Studio <noreply@digitaltimes.fr>',
             to: [designer.email],
             subject: `Visunyx | Nouveau projet assigné : ${project.title}`,
-            html: `<div style="font-family:'Montserrat',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
+            html: `<div style="font-family:'Inter',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
               <div style="text-align:center;margin-bottom:24px;">
-                <h2 style="color:#9332FF;margin:0;">Visunyx Studio</h2>
+                <h2 style="color:#6366F1;margin:0;">Visunyx Studio</h2>
               </div>
 
               <p>Bonjour ${designer.full_name || ''},</p>
@@ -101,7 +101,7 @@ module.exports = async (req, res) => {
 
               <p>Vous pouvez accéder au brief et aux fichiers du projet depuis votre espace :</p>
 
-              <a href="${projectLink}" style="display:inline-block;padding:14px 32px;background:#9332FF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">Accéder au projet</a>
+              <a href="${projectLink}" style="display:inline-block;padding:14px 32px;background:#6366F1;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">Accéder au projet</a>
 
               <p style="margin-top:24px;">Bonne création !</p>
 

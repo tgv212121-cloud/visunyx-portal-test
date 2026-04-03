@@ -92,9 +92,9 @@ module.exports = async (req, res) => {
       const templates = {
         designer: {
           subject: 'Visunyx | Bienvenue dans l\'équipe !',
-          html: `<div style="font-family:'Montserrat',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
+          html: `<div style="font-family:'Inter',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
             <div style="text-align:center;margin-bottom:24px;">
-              <h2 style="color:#9332FF;margin:0;">Visunyx Studio</h2>
+              <h2 style="color:#6366F1;margin:0;">Visunyx Studio</h2>
             </div>
             <p>Bonjour ${full_name || ''},</p>
             <p>Vous avez été ajouté comme <strong>designer</strong> sur la plateforme Visunyx Studio.</p>
@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
               <p style="margin:0;"><strong>Email :</strong> ${email}</p>
             </div>
             <p>Votre mot de passe temporaire vous sera communiqué séparément par votre administrateur.</p>
-            <a href="${loginUrl}" style="display:inline-block;padding:14px 32px;background:#9332FF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">Accéder à mon espace</a>
+            <a href="${loginUrl}" style="display:inline-block;padding:14px 32px;background:#6366F1;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">Accéder à mon espace</a>
             <p style="margin-top:20px;font-size:13px;color:#888;">Nous vous recommandons de changer votre mot de passe après votre première connexion.</p>
             <p style="margin-top:24px;"><strong>Visunyx Studio</strong><br>
             <em style="color:#888;">Chaque marque commence par une vision. La vôtre est unique.</em></p>
@@ -113,9 +113,9 @@ module.exports = async (req, res) => {
         },
         client: {
           subject: 'Visunyx | Votre espace client est prêt',
-          html: `<div style="font-family:'Montserrat',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
+          html: `<div style="font-family:'Inter',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
             <div style="text-align:center;margin-bottom:24px;">
-              <h2 style="color:#9332FF;margin:0;">Visunyx Studio</h2>
+              <h2 style="color:#6366F1;margin:0;">Visunyx Studio</h2>
             </div>
             <p>Bonjour ${full_name || ''},</p>
             <p>Votre espace client a été créé sur Visunyx Studio.</p>
@@ -124,7 +124,7 @@ module.exports = async (req, res) => {
               <p style="margin:0;"><strong>Email :</strong> ${email}</p>
             </div>
             <p>Vous recevrez un lien de connexion sécurisé par email à chaque accès.</p>
-            <a href="${loginUrl}" style="display:inline-block;padding:14px 32px;background:#9332FF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">Accéder à mon espace</a>
+            <a href="${loginUrl}" style="display:inline-block;padding:14px 32px;background:#6366F1;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">Accéder à mon espace</a>
             <p style="margin-top:24px;"><strong>Visunyx Studio</strong><br>
             <em style="color:#888;">Chaque marque commence par une vision. La vôtre est unique.</em></p>
             <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">

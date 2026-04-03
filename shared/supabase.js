@@ -269,7 +269,7 @@ async function signOut() {
     const banner = document.createElement('div');
     banner.id = 'dev-banner';
     banner.innerHTML = '\u26A0\uFE0F ENVIRONNEMENT DEV \u2014 Preview deployment';
-    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(90deg,#F59E0B,#EF4444);color:#fff;text-align:center;font-size:11px;font-weight:700;letter-spacing:0.05em;padding:5px 0;font-family:Montserrat,sans-serif;text-shadow:0 1px 2px rgba(0,0,0,0.3);';
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(90deg,#F59E0B,#EF4444);color:#fff;text-align:center;font-size:11px;font-weight:700;letter-spacing:0.05em;padding:5px 0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;text-shadow:0 1px 2px rgba(0,0,0,0.3);';
     document.body.prepend(banner);
   });
 })();

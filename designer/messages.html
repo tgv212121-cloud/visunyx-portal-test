@@ -7,7 +7,7 @@
   <link rel="icon" href="https://cdn.prod.website-files.com/6877a7a543a6800105f4b19d/6877a8a8bd06034b54695630_webclip.avif">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://unpkg.com/lucide@0.309.0/dist/umd/lucide.min.js" defer></script>
@@ -154,7 +154,7 @@ function renderConversations(conversations) {
     const hasAttach = msg?.attachment_path ? ' · 📎' : '';
 
     return `
-    <a href="./project.html?id=${p.id}#messages" class="conversation-item" style="display:flex;gap:16px;padding:20px;background:var(--glass);border:1px solid ${c.unread > 0 ? 'rgba(147,50,255,0.35)' : 'var(--glass-border)'};border-radius:14px;text-decoration:none;color:inherit;transition:all 0.2s;${c.unread > 0 ? 'background:rgba(147,50,255,0.04);' : ''}" onmouseover="this.style.borderColor='rgba(147,50,255,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='${c.unread > 0 ? 'rgba(147,50,255,0.35)' : 'var(--glass-border)'}';this.style.transform=''">
+    <a href="./project.html?id=${p.id}#messages" class="conversation-item" style="display:flex;gap:16px;padding:20px;background:var(--glass);border:1px solid ${c.unread > 0 ? 'rgba(232,89,12,0.35)' : 'var(--glass-border)'};border-radius:14px;text-decoration:none;color:inherit;transition:all 0.2s;${c.unread > 0 ? 'background:rgba(232,89,12,0.04);' : ''}" onmouseover="this.style.borderColor='rgba(232,89,12,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='${c.unread > 0 ? 'rgba(232,89,12,0.35)' : 'var(--glass-border)'}';this.style.transform=''">
       <div class="avatar" style="width:44px;height:44px;font-size:14px;border-radius:12px;flex-shrink:0;">${initials(p.title)}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;">

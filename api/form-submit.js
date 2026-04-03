@@ -216,14 +216,14 @@ module.exports = async (req, res) => {
               from: 'Visunyx Studio <noreply@digitaltimes.fr>',
               to: [data.email],
               subject: 'Visunyx | Bonne réception de votre brief',
-              html: `<div style="font-family:'Montserrat',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
+              html: `<div style="font-family:'Inter',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
                 <div style="text-align:center;margin-bottom:24px;">
-                  <h2 style="color:#9332FF;margin:0;">Visunyx Studio</h2>
+                  <h2 style="color:#6366F1;margin:0;">Visunyx Studio</h2>
                 </div>
                 <p>Bonjour ${data.full_name || ''},</p>
                 <p>Nous vous confirmons la bonne réception de votre brief de création d'identité visuelle.</p>
                 <p>Merci d'avoir pris le temps de le compléter avec soin : c'est une étape essentielle pour garantir un résultat aligné avec vos attentes.</p>
-                <h3 style="color:#9332FF;margin-top:28px;">Les prochaines étapes :</h3>
+                <h3 style="color:#6366F1;margin-top:28px;">Les prochaines étapes :</h3>
                 <p>✅ <strong>Analyse de votre brief :</strong><br>
                 Notre équipe va étudier vos réponses afin de comprendre en profondeur vos besoins et l'univers que vous souhaitez créer.</p>
                 <p>✅ <strong>Création des concepts :</strong><br>
@@ -232,9 +232,9 @@ module.exports = async (req, res) => {
                 Selon votre formule, vous disposez de 2 à 5 révisions pour ajuster et affiner le logo choisi.</p>
                 <p>✅ <strong>Livraison finale :</strong><br>
                 Après validation du concept, vous recevrez tous les livrables inclus dans votre pack.</p>
-                <h3 style="color:#9332FF;margin-top:28px;">Suivi de votre projet :</h3>
+                <h3 style="color:#6366F1;margin-top:28px;">Suivi de votre projet :</h3>
                 <p>Dès que vos concepts seront prêts, ils seront disponibles sur votre interface client :</p>
-                <a href="${magicUrl}" style="display:inline-block;padding:14px 32px;background:#9332FF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">Accéder à mon espace client</a>
+                <a href="${magicUrl}" style="display:inline-block;padding:14px 32px;background:#6366F1;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">Accéder à mon espace client</a>
                 <p style="margin-top:24px;">Pour toute question en attendant, n'hésitez pas à répondre directement à ce message.</p>
                 <p style="margin-top:24px;">Merci encore pour votre confiance,</p>
                 <p><strong>Visunyx Studio</strong><br>

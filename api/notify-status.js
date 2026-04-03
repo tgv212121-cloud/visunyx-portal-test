@@ -20,9 +20,9 @@ const STATUS_EMAILS = {
 };
 
 function buildStatusHtml(status, { clientName, projectTitle, projectLink, revisionLink, revisionsLeft }) {
-  const header = `<div style="font-family:'Montserrat',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
+  const header = `<div style="font-family:'Inter',sans-serif;color:#333;line-height:1.8;max-width:600px;margin:0 auto;padding:30px 20px;">
     <div style="text-align:center;margin-bottom:24px;">
-      <h2 style="color:#9332FF;margin:0;">Visunyx Studio</h2>
+      <h2 style="color:#6366F1;margin:0;">Visunyx Studio</h2>
     </div>`;
 
   const footer = `<p style="margin-top:24px;"><strong>Visunyx Studio</strong><br>
@@ -31,8 +31,8 @@ function buildStatusHtml(status, { clientName, projectTitle, projectLink, revisi
     <p style="font-size:11px;color:#999;text-align:center;">Cet email a été envoyé automatiquement par Visunyx Studio.</p>
   </div>`;
 
-  const btn = (text, href) => `<a href="${href}" style="display:inline-block;padding:14px 32px;background:#9332FF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">${text}</a>`;
-  const btnOutline = (text, href) => `<a href="${href}" style="display:inline-block;padding:12px 28px;background:rgba(147,50,255,0.1);color:#9332FF;text-decoration:none;border-radius:8px;font-weight:bold;border:2px solid #9332FF;margin:12px 0;">${text}</a>`;
+  const btn = (text, href) => `<a href="${href}" style="display:inline-block;padding:14px 32px;background:#6366F1;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;margin:16px 0;">${text}</a>`;
+  const btnOutline = (text, href) => `<a href="${href}" style="display:inline-block;padding:12px 28px;background:rgba(99,102,241,0.1);color:#6366F1;text-decoration:none;border-radius:8px;font-weight:bold;border:2px solid #6366F1;margin:12px 0;">${text}</a>`;
 
   if (status === 'en-cours') {
     return `${header}
@@ -62,10 +62,10 @@ function buildStatusHtml(status, { clientName, projectTitle, projectLink, revisi
       <p>Nous avons le plaisir de vous envoyer les premiers concepts créés à partir de votre brief.</p>
       <p>Chaque proposition a été pensée pour refléter votre univers, vos valeurs et l'ambition de votre marque.</p>
 
-      <h3 style="color:#9332FF;margin-top:28px;">Voici vos propositions de logo :</h3>
+      <h3 style="color:#6366F1;margin-top:28px;">Voici vos propositions de logo :</h3>
       ${btn('➡️ Accéder à vos concepts', projectLink)}
 
-      <h3 style="color:#9332FF;margin-top:28px;">🔍 Et maintenant ?</h3>
+      <h3 style="color:#6366F1;margin-top:28px;">🔍 Et maintenant ?</h3>
       <p>Prenez le temps de les analyser : quelles propositions vous parlent le plus ? Pourquoi ?</p>
 
       ${revisionsLeft > 0 ? `

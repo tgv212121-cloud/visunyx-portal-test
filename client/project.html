@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://nokrexfszurxxuspvbjd.supabase.co" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -21,7 +21,7 @@
 
   <style>
     .client-layout { position: relative; z-index: 10; min-height: 100vh; display: flex; flex-direction: column; }
-    .client-topbar { height: 64px; background: rgba(11,11,26,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; position: sticky; top: 0; z-index: 90; }
+    .client-topbar { height: 64px; background: rgba(14,14,16,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; position: sticky; top: 0; z-index: 90; }
     .client-content { flex: 1; padding: 36px 32px; max-width: 1000px; width: 100%; margin: 0 auto; }
 
     .brief-block { margin-bottom: 8px; }
@@ -30,7 +30,7 @@
 
     /* Loading skeleton animation */
     .vx-skeleton-block {
-      background: linear-gradient(90deg, rgba(147,50,255,0.06) 25%, rgba(147,50,255,0.12) 50%, rgba(147,50,255,0.06) 75%);
+      background: linear-gradient(90deg, rgba(232,89,12,0.06) 25%, rgba(232,89,12,0.12) 50%, rgba(232,89,12,0.06) 75%);
       background-size: 200% 100%;
       animation: vx-shimmer 1.5s infinite;
       border-radius: var(--radius);
@@ -83,8 +83,8 @@
 
     <!-- Revision button -->
     <div id="revision-banner" style="display:none;margin-bottom:20px;">
-      <a id="revision-link" href="#" style="display:flex;align-items:center;gap:14px;padding:18px 24px;background:linear-gradient(135deg,rgba(147,50,255,0.08),rgba(77,101,255,0.06));border:1px solid rgba(147,50,255,0.25);border-radius:14px;text-decoration:none;color:inherit;transition:all 0.25s;" onmouseover="this.style.borderColor='rgba(147,50,255,0.5)'" onmouseout="this.style.borderColor='rgba(147,50,255,0.25)'">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(147,50,255,0.15);border:1px solid rgba(147,50,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <a id="revision-link" href="#" style="display:flex;align-items:center;gap:14px;padding:18px 24px;background:linear-gradient(135deg,rgba(232,89,12,0.08),rgba(232,89,12,0.06));border:1px solid rgba(232,89,12,0.25);border-radius:14px;text-decoration:none;color:inherit;transition:all 0.25s;" onmouseover="this.style.borderColor='rgba(232,89,12,0.5)'" onmouseout="this.style.borderColor='rgba(232,89,12,0.25)'">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(232,89,12,0.15);border:1px solid rgba(232,89,12,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <i data-lucide="refresh-cw" style="width:18px;height:18px;color:var(--purple);"></i>
         </div>
         <div style="flex:1;">
@@ -116,9 +116,9 @@
 
     <!-- TAB: Fichiers -->
     <div id="tab-fichiers" class="tab-pane" style="display:block;">
-      <div style="border:2px dashed rgba(147,50,255,0.2);border-radius:var(--radius);padding:32px 24px;text-align:center;cursor:pointer;transition:all 0.25s;margin-bottom:20px;" id="upload-zone"
+      <div style="border:2px dashed rgba(232,89,12,0.2);border-radius:var(--radius);padding:32px 24px;text-align:center;cursor:pointer;transition:all 0.25s;margin-bottom:20px;" id="upload-zone"
            onclick="document.getElementById('file-input').click()"
-           ondragover="event.preventDefault();this.style.borderColor='var(--purple)';this.style.background='rgba(147,50,255,0.05)'"
+           ondragover="event.preventDefault();this.style.borderColor='var(--purple)';this.style.background='rgba(232,89,12,0.05)'"
            ondragleave="this.style.borderColor='';this.style.background=''"
            ondrop="event.preventDefault();this.style.borderColor='';this.style.background='';handleFiles(event.dataTransfer.files)">
         <input type="file" id="file-input" multiple onchange="handleFiles(this.files)" style="display:none;">
@@ -245,7 +245,7 @@ async function loadProject() {
 
   document.title = `${p.title} - Visunyx Studio`;
   document.getElementById('project-header').innerHTML = `
-    <div style="font-size:clamp(22px,4vw,32px);font-weight:800;color:var(--fg);margin-bottom:8px;letter-spacing:-0.02em;">${escHtml(p.title)}</div>
+    <div style="font-size:clamp(22px,4vw,32px);font-weight:700;color:var(--fg);margin-bottom:8px;letter-spacing:-0.02em;">${escHtml(p.title)}</div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       ${renderStatusBadge(p.status)}
       ${p.due_date ? `<span style="font-size:var(--text-xs);color:var(--fg-muted);"><i data-lucide="calendar" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i>${t('client.delivery')} ${formatDate(p.due_date)}</span>` : ''}
@@ -436,7 +436,7 @@ function renderFilesView() {
           const count = visibleFiles.filter(f => f.category === folder && f.file_name !== '.folder').length;
           return `
           <div class="glass-card file-card" style="cursor:pointer;" onclick="openFolder('${escHtml(folder)}')">
-            <div class="file-icon" style="background:rgba(147,50,255,0.12);"><i data-lucide="folder" style="width:28px;height:28px;color:var(--purple);"></i></div>
+            <div class="file-icon" style="background:rgba(232,89,12,0.12);"><i data-lucide="folder" style="width:28px;height:28px;color:var(--purple);"></i></div>
             <div class="file-name">${escHtml(folder)}</div>
             <div class="file-meta">${count} ${count > 1 ? t('files') : t('file')}</div>
           </div>`;

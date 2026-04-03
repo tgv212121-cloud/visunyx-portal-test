@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://nokrexfszurxxuspvbjd.supabase.co" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/style-base.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -58,11 +58,11 @@
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <div class="glass-card" style="padding:14px 18px;flex:1;min-width:120px;">
             <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--fg-subtle);margin-bottom:4px;" data-i18n="files.title">Fichiers</div>
-            <div style="font-size:var(--text-xl);font-weight:800;color:var(--fg);" id="stat-files-total">0</div>
+            <div style="font-size:var(--text-xl);font-weight:700;color:var(--fg);" id="stat-files-total">0</div>
           </div>
           <div class="glass-card" style="padding:14px 18px;flex:1;min-width:120px;">
             <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--fg-subtle);margin-bottom:4px;" data-i18n="tab.internal">Discussion</div>
-            <div style="font-size:var(--text-xl);font-weight:800;color:var(--fg);" id="stat-messages-total">0</div>
+            <div style="font-size:var(--text-xl);font-weight:700;color:var(--fg);" id="stat-messages-total">0</div>
           </div>
           <div class="glass-card" style="padding:14px 18px;flex:1;min-width:120px;">
             <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--fg-subtle);margin-bottom:4px;" data-i18n="th.deadline">Echeance</div>
@@ -196,7 +196,7 @@ async function loadProject() {
 
     const isLate = p.due_date && new Date(p.due_date) < new Date() && !['termine','concept-livre'].includes(p.status);
     document.getElementById('project-header').innerHTML = `
-      <div style="font-size:clamp(20px,3vw,28px);font-weight:800;color:var(--fg);margin-bottom:8px;">${escHtml(p.title)}</div>
+      <div style="font-size:clamp(20px,3vw,28px);font-weight:700;color:var(--fg);margin-bottom:8px;">${escHtml(p.title)}</div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         ${renderStatusBadge(p.status)}
         ${renderPriorityBadge(p.priority)}
@@ -226,7 +226,7 @@ async function loadBrief() {
   container.style.display = '';
 
   let html = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,rgba(147,50,255,0.2),rgba(77,101,255,0.15));border:1px solid rgba(147,50,255,0.3);display:flex;align-items:center;justify-content:center;">
+    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,rgba(232,89,12,0.2),rgba(232,89,12,0.15));border:1px solid rgba(232,89,12,0.3);display:flex;align-items:center;justify-content:center;">
       <i data-lucide="file-text" style="width:16px;height:16px;color:var(--purple);"></i>
     </div>
     <div>
@@ -296,7 +296,7 @@ function renderFilesView() {
           const count = allFiles.filter(f => f.category === folder && f.file_name !== '.folder').length;
           return `
           <div class="glass-card file-card" style="cursor:pointer;position:relative;" onclick="openFolder('${escHtml(folder)}')">
-            <div class="file-icon" style="background:rgba(147,50,255,0.12);"><i data-lucide="folder" style="width:28px;height:28px;color:var(--purple);"></i></div>
+            <div class="file-icon" style="background:rgba(232,89,12,0.12);"><i data-lucide="folder" style="width:28px;height:28px;color:var(--purple);"></i></div>
             <div class="file-name">${escHtml(folder)}</div>
             <div class="file-meta">${count} ${count > 1 ? t('files') : t('file')}</div>
             <div style="position:absolute;top:8px;right:8px;display:flex;gap:4px;">
